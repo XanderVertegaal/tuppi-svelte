@@ -20,35 +20,39 @@
   const dispatch = createEventDispatcher();
 
   function formatAnswers(exercise: Exercise): AnswerData {
-    const allAnswers: string[] = [];
-    let correct: string | null = null;
-    let promptChar: string | null = null;
+    const answerData: AnswerData = {
+      promptChar: '',
+      correct: '',
+      allAnswers: []
+    };
 
-    // Continue here: include differentiation between -log and -syll!
-    // Also support keypress selection and written input
-
-    switch (key) {
-      case value:
-        
+    switch (exercise.questionType) {
+      case 'eng-2-hitt-syll':
+        answerData.promptChar = exercise.character.syllabograph.join(', ')
+        answerData.correct = exercise.character.cuneiform.unicode;
+        answerData.allAnswers.push(...exercise.answers);
         break;
-    
+      case 'hitt-2-eng-syll':
+        answerData.promptChar = exercise.character.cuneiform.unicode;
+        answerData.correct = exercise.character.syllabograph.join(', ');
+        answerData.allAnswers.push(...exercise.answers);
+        break;
+      case 'eng-2-hitt-log':
+        answerData.promptChar = exercise.character.logograph.map(log => log.logTransliteration).join(', ');
+        answerData.correct = exercise.character.cuneiform.unicode;
+        answerData.allAnswers.push(...exercise.answers);
+        break;
+      case 'hitt-2-eng-log':
+        answerData.promptChar = exercise.character.cuneiform.unicode;
+        answerData.correct = exercise.character.logograph.map(log => log.logTransliteration).join(', ');
+        answerData.allAnswers.push(...exercise.answers);
+        break;
       default:
         break;
     }
-    if (exercise.questionType.startsWith('eng-2-hitt')) {
-      promptChar = exercise.character.syllabograph.join(', ')
-      correct = exercise.character.cuneiform.unicode;
-      exercise.answers.forEach(char => allAnswers.push(char));
-    } else {
-      promptChar = exercise.character.cuneiform.unicode;
-      correct = exercise.character.syllabograph.join(', ');
-      allAnswers.push(...exercise.answers);
-    }
-    return { 
-      promptChar, 
-      correct, 
-      allAnswers: shuffleArray(allAnswers)
-    };
+
+    answerData.allAnswers = shuffleArray(answerData.allAnswers);
+    return answerData;
   }
 
   $: if (exercises) {
