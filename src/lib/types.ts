@@ -3,11 +3,6 @@ type Question =
   | 'hitt-2-eng-log' | 'eng-2-hitt-log'
   | 'hitt-2-eng-det' | 'eng-2-hitt-det';
 
-export interface simpleCharacter {
-  cuneiform: string;
-  latin: string;
-}
-
 export interface Exercise {
   id: number;
   character: FullCharacter;

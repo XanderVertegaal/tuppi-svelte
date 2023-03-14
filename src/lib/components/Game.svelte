@@ -103,8 +103,8 @@
       {/each}
     </ul>
   {/if}
-  {:else}
-    <p>There are no more exercises to do.</p>
+{:else}
+  <p>There are no more exercises to do.</p>
 {/if}
 
 <style lang="scss">

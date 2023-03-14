@@ -3,9 +3,8 @@
 	import Game from "$lib/components/Game.svelte";
 	import SignCard from "$lib/components/SignCard.svelte";
 	import { GameState, type Exercise } from "$lib/types";
-	import { renderUnicode } from "$lib/utils";
 	import type { CreateExercise } from "../api/create-exercise/+server";
-	import type { PageData } from "./$types";
+  import type { PageData } from "./$types";
 
   export let data: PageData;
 
