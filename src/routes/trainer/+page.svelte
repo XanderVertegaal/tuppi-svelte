@@ -1,18 +1,23 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
+	import { trainer_allCharsStore } from "$houdini";
 	import Game from "$lib/components/Game.svelte";
 	import SignCard from "$lib/components/SignCard.svelte";
 	import { GameState, type Exercise } from "$lib/types";
+	import { get } from "svelte/store";
 	import type { CreateExercise } from "../api/create-exercise/+server";
-  import type { PageData } from "./$types";
-
+  import type { PageData } from './$houdini';
   export let data: PageData;
 
+  $: ({trainer_allChars} = data)
+
+  $: console.log(get(trainer_allChars));
+
   let gameState: GameState = GameState.PREPARING; 
-  let selectedIds: number[] = [];
+  let selectedIds: string[] = [];
   let exercises: Exercise[] = [];
 
-  function selectIds(id: number): void {
+  function selectIds(id: string): void {
     if (selectedIds.includes(id)) {
       selectedIds = selectedIds.filter(cardId => cardId !== id);
       return;
@@ -64,9 +69,9 @@
     {/if}
   </section>
   
-  {#if data.characters.length > 0}
+  {#if $trainer_allChars?.data?.allChars}
     <ul class="sign-card-list">
-      {#each data.characters as character}
+      {#each $trainer_allChars.data.allChars as character}
         <SignCard {character} selected={selectedIds.includes(character.id)} on:select={event => selectIds(event.detail.id)} />
       {/each}
     </ul>

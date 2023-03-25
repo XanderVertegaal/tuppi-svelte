@@ -1,0 +1,6 @@
+query trainer_allChars {
+  allChars {
+    id
+    unicode
+  }
+}

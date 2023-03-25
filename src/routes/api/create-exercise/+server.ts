@@ -4,7 +4,7 @@ import { createExercises } from "$lib/utils";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export interface CreateExercise {
-  selectedIds: number[];
+  selectedIds: (string | number)[];
   gameSettings: GameSettings
 }
 

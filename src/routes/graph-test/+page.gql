@@ -1,6 +1,7 @@
 query User {
-  user(id: 10) {
+  user(id: 17) {
     id
     firstName
+    lastName
   }
 }

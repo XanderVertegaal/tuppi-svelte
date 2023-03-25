@@ -1,12 +1,57 @@
+type Character {
+  detValues: [Determinative!]
+  id: ID!
+  logValues: [Logograph!]
+  syllValues: [String!]
+  unicode: String!
+  variants: [CharacterVariant!]
+}
+
+type CharacterVariant {
+  SignVariantCategory: SignVariantCategory!
+  diagonalAsc: Int!
+  diagonalDesc: Int!
+  fontSet: FontSet!
+  glossenkeil: Int!
+  horizontal: Int!
+  id: ID!
+  vertical: Int!
+}
+
+type Determinative {
+  detTranslation: String!
+  detTransliteration: String!
+  id: ID!
+}
+
+enum FontSet {
+  ULLIKUMMI_A
+  ULLIKUMMI_C
+  ULLKUMMI_B
+}
+
+type Logograph {
+  id: ID!
+  logTranslation: String!
+  logTransliteration: String!
+}
+
 type Mutation {
   createUser(email: String!, firstName: String!, lastName: String!): User
   deleteUser(id: ID!): User
 }
 
 type Query {
-  hello: String
+  allChars: [Character!]
   user(id: ID!): User
   users: [User!]
+}
+
+enum SignVariantCategory {
+  DEFAULT
+  EARLY
+  LATE
+  MIDDLE
 }
 
 type User {

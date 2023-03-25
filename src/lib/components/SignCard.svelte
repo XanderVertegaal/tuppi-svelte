@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Character } from "$lib/charMap";
+	import type { trainer_allChars$result } from "$houdini";
 	import { renderUnicode } from "$lib/utils";
 	import { createEventDispatcher } from "svelte";
 
-  export let character: Character;
+  export let character: NonNullable<trainer_allChars$result['allChars']>[0]; 
   export let selected: boolean;
 
-  const dispatch = createEventDispatcher<{select: {id: number}}>();
+  const dispatch = createEventDispatcher<{select: {id: string}}>();
 
   function selectCharacter() {
     dispatch("select", {id: character.id});
@@ -16,7 +16,7 @@
 
 <li class="char-card" class:selected>
   <span class="char-id">#{character.id}</span>
-  <h2 class="char cuneiform">{renderUnicode(character.cuneiform.unicode)}</h2>
+  <h2 class="char cuneiform">{renderUnicode(character.unicode)}</h2>
 
   <button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
 
