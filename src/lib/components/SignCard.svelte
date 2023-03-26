@@ -3,7 +3,9 @@
 	import { renderUnicode } from "$lib/utils";
 	import { createEventDispatcher } from "svelte";
 
-  export let character: NonNullable<trainer_allChars$result['allChars']>[0]; 
+  type Character = trainer_allChars$result['allChars'][0];
+
+  export let character: Character; 
   export let selected: boolean;
 
   const dispatch = createEventDispatcher<{select: {id: string}}>();
@@ -21,7 +23,7 @@
   <button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
 
   <button type="button">
-    <a href="/card-details/{character.id}">More info</a>
+    <a href="/characters/{character.id}">More info</a>
   </button>
 </li>
 

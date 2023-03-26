@@ -15,7 +15,7 @@
     <ul>
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
-      <li><a href="/trainer">Trainer</a></li>
+      <li><a href="/characters">Characters</a></li>
       <li><button on:click={toggleMenu}>Utilities</button></li>
     </ul>  
   </nav>

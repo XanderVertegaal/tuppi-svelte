@@ -8,7 +8,7 @@ type Character {
 }
 
 type CharacterVariant {
-  SignVariantCategory: SignVariantCategory!
+  category: SignVariantCategory!
   diagonalAsc: Int!
   diagonalDesc: Int!
   fontSet: FontSet!
@@ -42,9 +42,10 @@ type Mutation {
 }
 
 type Query {
-  allChars: [Character!]
+  allChars: [Character!]!
+  char(id: ID!): Character
   user(id: ID!): User
-  users: [User!]
+  users: [User!]!
 }
 
 enum SignVariantCategory {

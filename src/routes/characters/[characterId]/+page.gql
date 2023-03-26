@@ -1,0 +1,27 @@
+query characters_char($characterId: ID! = 1) {
+  char(id: $characterId) {
+    id
+    unicode
+    syllValues
+    logValues {
+      id
+      logTranslation
+      logTransliteration
+    }
+    detValues {
+      id
+      detTranslation
+      detTransliteration
+    }
+    variants {
+      id
+      fontSet
+      category
+      vertical
+      horizontal
+      glossenkeil
+      diagonalAsc
+      diagonalDesc
+    }
+  }
+}
