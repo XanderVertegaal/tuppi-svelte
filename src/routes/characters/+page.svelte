@@ -9,7 +9,7 @@
   import type { PageData } from './$houdini';
   export let data: PageData;
 
-  $: ({trainer_allChars} = data)
+  $: ({trainer_allChars} = data);
 
   $: console.log(get(trainer_allChars));
 
@@ -75,6 +75,10 @@
         <SignCard {character} selected={selectedIds.includes(character.id)} on:select={event => selectIds(event.detail.id)} />
       {/each}
     </ul>
+  {:else if $trainer_allChars?.errors}
+    <p>Could not load characters. Sorry about that!</p>
+  {:else if $trainer_allChars?.fetching}
+    <p>Loading characters...</p>
   {/if}
 </article>
 {:else if gameState === GameState.RUNNING}

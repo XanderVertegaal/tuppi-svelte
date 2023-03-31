@@ -18,10 +18,41 @@ type CharacterVariant {
   vertical: Int!
 }
 
+type CompVariant {
+  category: SignVariantCategory!
+  character: Character!
+}
+
+type CompVariantData {
+  identicalVariants: [CompVariant!]!
+  similarVariants: DifferenceOneVariants
+}
+
+input CompVariantsInput {
+  diagonalAsc: Int!
+  diagonalDesc: Int!
+  glossenkeil: Int!
+  horizontal: Int!
+  vertical: Int!
+}
+
 type Determinative {
   detTranslation: String!
   detTransliteration: String!
   id: ID!
+}
+
+type DifferenceOneVariants {
+  diagonalAscMinus: [CompVariant!]!
+  diagonalAscPlus: [CompVariant!]!
+  diagonalDescMinus: [CompVariant!]!
+  diagonalDescPlus: [CompVariant!]!
+  glossenkeilMinus: [CompVariant!]!
+  glossenkeilPlus: [CompVariant!]!
+  horizontalMinus: [CompVariant!]!
+  horizontalPlus: [CompVariant!]!
+  verticalMinus: [CompVariant!]!
+  verticalPlus: [CompVariant!]!
 }
 
 enum FontSet {
@@ -44,6 +75,7 @@ type Mutation {
 type Query {
   allChars: [Character!]!
   char(id: ID!): Character
+  compVariants(input: CompVariantsInput!): CompVariantData!
   user(id: ID!): User
   users: [User!]!
 }
