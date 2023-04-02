@@ -1,3 +1,7 @@
+import type { characters_char$result, trainer_allChars$result } from "$houdini";
+
+export type SignCardCharacter = Pick<trainer_allChars$result['allChars'][0], 'id' | 'unicode'>;
+
 type Question =
   'hitt-2-eng-syll' | 'eng-2-hitt-syll'
   | 'hitt-2-eng-log' | 'eng-2-hitt-log'
@@ -5,33 +9,10 @@ type Question =
 
 export interface Exercise {
   id: number;
-  character: FullCharacter;
+  character: characters_char$result;
   questionType: Question;
   correct: boolean;
   answers: string[];
-}
-
-export interface Logogram {
-  logTransliteration: string;
-  logTranslation: string;
-}
-
-export interface Determiner {
-  detTransliteration: string;
-  detTranslation: string;
-}
-
-export enum SignVariantCategory {
-  DEFAULT = 'default',
-  LATE = 'late',
-  MIDDLE = 'middle',
-  EARLY = 'early'
-}
-
-export enum FontSet {
-  ULLIKUMMI_A = 'ullikummia',
-  ULLIKUMMI_B = 'ullikummib', 
-  ULLIKUMMI_C = 'ullikummic'
 }
 
 export interface SignComponents {
@@ -42,40 +23,6 @@ export interface SignComponents {
   diagonalDesc: number;
 }
   
-export interface SignVariant {
-  category: SignVariantCategory;
-  fontset: FontSet;
-  components: SignComponents
-}
-
-export interface Cuneiform {
-  unicode: string;
-  variants: SignVariant[];
-}
-
-type OptionalVariants = Omit<Partial<SignVariant>, 'components'> & {components: Partial<SignComponents>}
-  
-type OptionalCuneiform = Omit<Cuneiform, 'variants'> 
-  & {
-  variants: OptionalVariants[];
-}
-
-export type CharProps = Omit<FullCharacter, 'cuneiform' | 'syllabograph' | 'logograph' | 'determiner'>
-  & Partial<Pick<FullCharacter, 'syllabograph' | 'logograph' | 'determiner'>>
-  & { cuneiform: OptionalCuneiform; }
-
-export interface FullCharacter {
-  id: number;
-  cuneiform: Cuneiform;
-  syllabograph: string[];
-  logograph: Logogram[];
-  determiner: Determiner[];
-}
-
-export enum CounterAction { INCREMENT, DECREMENT };
-
-export type Dimension = keyof SignComponents;
-
 export enum GameState {
   PREPARING,
   RUNNING,

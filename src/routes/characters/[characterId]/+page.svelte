@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { SignVariantCategory } from "$houdini";
-	import { renderUnicode } from "$lib/utils";
+	import { fontsetMapping, renderUnicode } from "$lib/utils";
   import type { PageData } from './$houdini';
   export let data: PageData;
 
@@ -42,7 +42,7 @@
     <h4>Alternative forms:</h4>
     <ul>
     {#each altVariants as variant}
-      <li style:font-family="{variant.fontSet}">{renderUnicode(character.unicode)}</li>
+      <li class="{fontsetMapping[variant.fontSet]}">{renderUnicode(character.unicode)}</li>
           {/each}
     </ul>
   </section>

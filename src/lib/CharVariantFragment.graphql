@@ -1,0 +1,12 @@
+fragment CompVariant on CompVariant {
+  category
+  character {
+    id
+    unicode
+    variants {
+      id
+      category
+      fontSet
+    }
+  }
+}

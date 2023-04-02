@@ -11,8 +11,6 @@
 
   $: ({trainer_allChars} = data);
 
-  $: console.log(get(trainer_allChars));
-
   let gameState: GameState = GameState.PREPARING; 
   let selectedIds: string[] = [];
   let exercises: Exercise[] = [];

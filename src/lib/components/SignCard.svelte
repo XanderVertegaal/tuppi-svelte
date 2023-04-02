@@ -1,12 +1,13 @@
 <script lang="ts">
-	import type { trainer_allChars$result } from "$houdini";
-	import { renderUnicode } from "$lib/utils";
+	import { FontSet, type FontSet$options, type trainer_allChars$result } from "$houdini";
+	import type { SignCardCharacter } from "$lib/types";
+	import { fontsetMapping, renderUnicode } from "$lib/utils";
 	import { createEventDispatcher } from "svelte";
 
-  type Character = trainer_allChars$result['allChars'][0];
-
-  export let character: Character; 
-  export let selected: boolean;
+  export let character: SignCardCharacter; 
+  export let enableSelect: boolean = true;
+  export let selected: boolean = false;
+  export let fontSet: FontSet$options = FontSet.ULLIKUMMI_A;
 
   const dispatch = createEventDispatcher<{select: {id: string}}>();
 
@@ -18,9 +19,11 @@
 
 <li class="char-card" class:selected>
   <span class="char-id">#{character.id}</span>
-  <h2 class="char cuneiform">{renderUnicode(character.unicode)}</h2>
+  <h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
 
+  {#if enableSelect}
   <button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
+  {/if}
 
   <button type="button">
     <a href="/characters/{character.id}">More info</a>

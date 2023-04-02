@@ -1,5 +1,3 @@
-import { type FullCharacter, type Cuneiform, SignVariantCategory, FontSet, type CharProps, type Determiner, type Logogram } from "./types";
-
 export const CHARMAP = {
   a: '𒀀',
   e: '𒂊',
@@ -184,618 +182,618 @@ export const CHARMAP = {
   uz: '𒊻',
 } as const;
 
-export class Character implements FullCharacter {
-  id: number;
-  cuneiform: Cuneiform;
-  syllabograph: string[];
-  logograph: Logogram[];
-  determiner: Determiner[];
+// export class Character implements FullCharacter {
+//   id: number;
+//   cuneiform: Cuneiform;
+//   syllabograph: string[];
+//   logograph: Logogram[];
+//   determiner: Determiner[];
   
-  constructor(props: CharProps) {
-    this.id = props.id;
-    this.syllabograph = props.syllabograph || [];
-    this.logograph = props.logograph || [];
-    this.determiner = props.determiner || [];
-    this.cuneiform = {
-      unicode: props.cuneiform.unicode,
-      variants: []
-    };
+//   constructor(props: CharProps) {
+//     this.id = props.id;
+//     this.syllabograph = props.syllabograph || [];
+//     this.logograph = props.logograph || [];
+//     this.determiner = props.determiner || [];
+//     this.cuneiform = {
+//       unicode: props.cuneiform.unicode,
+//       variants: []
+//     };
 
-    props.cuneiform.variants.forEach((variant) => {
-      this.cuneiform.variants.push({
-        category: variant.category ?? SignVariantCategory.DEFAULT,
-        fontset: variant.fontset ?? FontSet.ULLIKUMMI_A,
-        components: {
-          vertical: variant.components?.vertical ?? 0,
-          horizontal: variant.components?.horizontal ?? 0,
-          glossenkeil: variant.components?.glossenkeil ?? 0,
-          diagonalAsc: variant.components?.diagonalAsc ?? 0,
-          diagonalDesc: variant.components?.diagonalDesc ?? 0,
-        }
-      });
-    }) 
-  }
-}
+//     props.cuneiform.variants.forEach((variant) => {
+//       this.cuneiform.variants.push({
+//         category: variant.category ?? SignVariantCategory.DEFAULT,
+//         fontset: variant.fontset ?? FontSet.ULLIKUMMI_A,
+//         components: {
+//           vertical: variant.components?.vertical ?? 0,
+//           horizontal: variant.components?.horizontal ?? 0,
+//           glossenkeil: variant.components?.glossenkeil ?? 0,
+//           diagonalAsc: variant.components?.diagonalAsc ?? 0,
+//           diagonalDesc: variant.components?.diagonalDesc ?? 0,
+//         }
+//       });
+//     }) 
+//   }
+// }
 
-export const complexCharacters: Character[] = [
-  new Character({
-    id: 1,
-    syllabograph: ['aš'],
-    logograph: [
-      {
-        logTransliteration: 'AŠ',
-        logTranslation: '???'
-      }
-    ],
-    cuneiform: {
-      unicode: '12038',
-      variants: [
-        {
-          components: {
-            horizontal: 1
-          }
-        }
-      ]
-    }
-  }),
+// export const complexCharacters: Character[] = [
+//   new Character({
+//     id: 1,
+//     syllabograph: ['aš'],
+//     logograph: [
+//       {
+//         logTransliteration: 'AŠ',
+//         logTranslation: '???'
+//       }
+//     ],
+//     cuneiform: {
+//       unicode: '12038',
+//       variants: [
+//         {
+//           components: {
+//             horizontal: 1
+//           }
+//         }
+//       ]
+//     }
+//   }),
 
-  new Character({
-    id: 2,
-    syllabograph: ['ḫal'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'ḪAL'
-    }],
-    cuneiform: {
-      unicode: '1212C',
-      variants: [{
-        components: {
-          horizontal: 2,
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 2,
+//     syllabograph: ['ḫal'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'ḪAL'
+//     }],
+//     cuneiform: {
+//       unicode: '1212C',
+//       variants: [{
+//         components: {
+//           horizontal: 2,
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 3,
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'PÉŠ'
-    }],
-    cuneiform: {
-      unicode: '1227E',
-      variants: [{
-        components: {
-          horizontal: 5,
-          vertical: 5,
-          glossenkeil: 2,
-          diagonalAsc: 1,
-          diagonalDesc: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 3,
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'PÉŠ'
+//     }],
+//     cuneiform: {
+//       unicode: '1227E',
+//       variants: [{
+//         components: {
+//           horizontal: 5,
+//           vertical: 5,
+//           glossenkeil: 2,
+//           diagonalAsc: 1,
+//           diagonalDesc: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 4,
-    syllabograph: ['bal', 'pal'],
-    logograph: [{
-      logTranslation: 'sacrifice',
-      logTransliteration: 'BAL'
-    }],
-    cuneiform: {
-      unicode: '12044',
-      variants: [{
-        components: {
-          horizontal: 3,
-          vertical: 1,
-          glossenkeil: 3
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 4,
+//     syllabograph: ['bal', 'pal'],
+//     logograph: [{
+//       logTranslation: 'sacrifice',
+//       logTransliteration: 'BAL'
+//     }],
+//     cuneiform: {
+//       unicode: '12044',
+//       variants: [{
+//         components: {
+//           horizontal: 3,
+//           vertical: 1,
+//           glossenkeil: 3
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 5,
-    syllabograph: ['šir'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'NU11'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'SIR12'
-    }, {
-      logTranslation: 'testicle',
-      logTransliteration: 'ŠIR'
-    }],
-    cuneiform: {
-      unicode: '122D3',
-      variants: [{
-        components: {
-          horizontal: 7,
-          diagonalAsc: 1,
-          diagonalDesc: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 5,
+//     syllabograph: ['šir'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'NU11'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'SIR12'
+//     }, {
+//       logTranslation: 'testicle',
+//       logTransliteration: 'ŠIR'
+//     }],
+//     cuneiform: {
+//       unicode: '122D3',
+//       variants: [{
+//         components: {
+//           horizontal: 7,
+//           diagonalAsc: 1,
+//           diagonalDesc: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 6,
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'GÍR'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'UL4'
-    }],
-    cuneiform: {
-      unicode: '12108',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 2,
-          vertical: 3,
-          diagonalAsc: 1,
-          diagonalDesc: 1
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          horizontal: 2,
-          vertical: 3,
-          diagonalDesc: 2
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 6,
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'GÍR'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'UL4'
+//     }],
+//     cuneiform: {
+//       unicode: '12108',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 2,
+//           vertical: 3,
+//           diagonalAsc: 1,
+//           diagonalDesc: 1
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           horizontal: 2,
+//           vertical: 3,
+//           diagonalDesc: 2
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 7,
-    syllabograph: ['tar', 'ḫaš'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'KU5'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'KUD'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'TAR'
-    }],
-    cuneiform: {
-      unicode: '122FB',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 2,
-          vertical: 1
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          vertical: 1,
-          diagonalDesc: 2
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_C,
-        components: {
-          horizontal: 2,
-          diagonalDesc: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 7,
+//     syllabograph: ['tar', 'ḫaš'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'KU5'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'KUD'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'TAR'
+//     }],
+//     cuneiform: {
+//       unicode: '122FB',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 2,
+//           vertical: 1
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           vertical: 1,
+//           diagonalDesc: 2
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_C,
+//         components: {
+//           horizontal: 2,
+//           diagonalDesc: 1
+//         }
+//       }]
+//     }
+//   }),
 
 
-  new Character({
-    id: 8,
-    syllabograph: ['an'],
-    logograph: [
-      {
-        logTransliteration: 'AN',
-        logTranslation: 'heaven'
-      },
-      {
-        logTransliteration: 'DINGIR',
-        logTranslation: 'god'
-      }
-    ],
-    determiner: [{
-      detTranslation: 'god',
-      detTransliteration: 'd'
-    }],
-    cuneiform: {
-      unicode: '1202D',
-      variants: [
-        {
-          components: {
-            horizontal: 2,
-            vertical: 1
-          }
-        }
-      ]
-    }
-  }),
+//   new Character({
+//     id: 8,
+//     syllabograph: ['an'],
+//     logograph: [
+//       {
+//         logTransliteration: 'AN',
+//         logTranslation: 'heaven'
+//       },
+//       {
+//         logTransliteration: 'DINGIR',
+//         logTranslation: 'god'
+//       }
+//     ],
+//     determiner: [{
+//       detTranslation: 'god',
+//       detTransliteration: 'd'
+//     }],
+//     cuneiform: {
+//       unicode: '1202D',
+//       variants: [
+//         {
+//           components: {
+//             horizontal: 2,
+//             vertical: 1
+//           }
+//         }
+//       ]
+//     }
+//   }),
 
-  new Character({
-    id: 9,
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'APIN'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'ENGAR'
-    }],
-    cuneiform: {
-      unicode: '12033',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 4,
-          vertical: 1
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          horizontal: 4,
-          vertical: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 9,
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'APIN'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'ENGAR'
+//     }],
+//     cuneiform: {
+//       unicode: '12033',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 4,
+//           vertical: 1
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           horizontal: 4,
+//           vertical: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 10,
-    syllabograph: ['maḫ'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'MAḪ'
-    }],
-    cuneiform: {
-      unicode: '12224',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 4,
-          vertical: 2,
-          glossenkeil: 2
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          horizontal: 2,
-          vertical: 3,
-          glossenkeil: 4
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_C,
-        components: {
-          horizontal: 5,
-          vertical: 2,
-          glossenkeil: 2
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 10,
+//     syllabograph: ['maḫ'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'MAḪ'
+//     }],
+//     cuneiform: {
+//       unicode: '12224',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 4,
+//           vertical: 2,
+//           glossenkeil: 2
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           horizontal: 2,
+//           vertical: 3,
+//           glossenkeil: 4
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_C,
+//         components: {
+//           horizontal: 5,
+//           vertical: 2,
+//           glossenkeil: 2
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 11,
-    syllabograph: ['nu'],
-    logograph: [
-      {
-        logTransliteration: 'NU',
-        logTranslation: '???'
-      }
-    ],
-    cuneiform: {
-      unicode: '12261',
-      variants: [
-        {
-          components: {
-            horizontal: 1,
-            glossenkeil: 1
-          }
-        }
-      ]
-    }
-  }),
+//   new Character({
+//     id: 11,
+//     syllabograph: ['nu'],
+//     logograph: [
+//       {
+//         logTransliteration: 'NU',
+//         logTranslation: '???'
+//       }
+//     ],
+//     cuneiform: {
+//       unicode: '12261',
+//       variants: [
+//         {
+//           components: {
+//             horizontal: 1,
+//             glossenkeil: 1
+//           }
+//         }
+//       ]
+//     }
+//   }),
 
-  new Character({
-    id: 12,
-    syllabograph: ['kul'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'KUL'
-    }, {
-      logTranslation: 'seed',
-      logTransliteration: 'NUMUN'
-    }],
-    cuneiform: {
-      unicode: '121B0',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 1,
-          glossenkeil: 3
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          horizontal: 1,
-          glossenkeil: 3
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 12,
+//     syllabograph: ['kul'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'KUL'
+//     }, {
+//       logTranslation: 'seed',
+//       logTransliteration: 'NUMUN'
+//     }],
+//     cuneiform: {
+//       unicode: '121B0',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 1,
+//           glossenkeil: 3
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           horizontal: 1,
+//           glossenkeil: 3
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 13,
-    syllabograph: ['pát/d', 'píd/t', 'pè', 'pì'],
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'BAD'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'BAD'
-      }, {
-      logTranslation: '???',
-      logTransliteration: 'SUMUN'
-      }, {
-      logTranslation: '???',
-      logTransliteration: 'SUN'
-      }, {
-      logTranslation: '???',
-      logTransliteration: 'TIL'
-      }, {
-      logTranslation: '???',
-      logTransliteration: 'ÚŠ'
-    }],
-    cuneiform: {
-      unicode: '12041',
-      variants: [{
-        components: {
-          horizontal: 1,
-          glossenkeil: 1
-        }
-      }],
-    }
-  }),
+//   new Character({
+//     id: 13,
+//     syllabograph: ['pát/d', 'píd/t', 'pè', 'pì'],
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'BAD'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'BAD'
+//       }, {
+//       logTranslation: '???',
+//       logTransliteration: 'SUMUN'
+//       }, {
+//       logTranslation: '???',
+//       logTransliteration: 'SUN'
+//       }, {
+//       logTranslation: '???',
+//       logTransliteration: 'TIL'
+//       }, {
+//       logTranslation: '???',
+//       logTransliteration: 'ÚŠ'
+//     }],
+//     cuneiform: {
+//       unicode: '12041',
+//       variants: [{
+//         components: {
+//           horizontal: 1,
+//           glossenkeil: 1
+//         }
+//       }],
+//     }
+//   }),
 
-  new Character({
-    id: 14,
-    syllabograph: ['dim', 'tim'],
-    cuneiform: {
-      unicode: '12074',
-      variants: [{
-        category: SignVariantCategory.DEFAULT,
-        fontset: FontSet.ULLIKUMMI_A,
-        components: {
-          horizontal: 1,
-          vertical: 1,
-          diagonalAsc: 2,
-          diagonalDesc: 2
-        }
-      }, {
-        category: SignVariantCategory.LATE,
-        fontset: FontSet.ULLIKUMMI_B,
-        components: {
-          horizontal: 2,
-          vertical: 1,
-          glossenkeil: 2,
-          diagonalAsc: 1,
-          diagonalDesc: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 14,
+//     syllabograph: ['dim', 'tim'],
+//     cuneiform: {
+//       unicode: '12074',
+//       variants: [{
+//         category: SignVariantCategory.DEFAULT,
+//         fontset: FontSet.ULLIKUMMI_A,
+//         components: {
+//           horizontal: 1,
+//           vertical: 1,
+//           diagonalAsc: 2,
+//           diagonalDesc: 2
+//         }
+//       }, {
+//         category: SignVariantCategory.LATE,
+//         fontset: FontSet.ULLIKUMMI_B,
+//         components: {
+//           horizontal: 2,
+//           vertical: 1,
+//           glossenkeil: 2,
+//           diagonalAsc: 1,
+//           diagonalDesc: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 15,
-    syllabograph: ['na'],
-    logograph: [
-      {
-        logTransliteration: 'NA',
-        logTranslation: '???'
-      }
-    ],
-    cuneiform: {
-      unicode: '1223E',
-      variants: [
-        {
-          components: {
-            horizontal: 1,
-            glossenkeil: 2,
-            vertical: 1
-          }
-        }
-      ]
-    }
-  }),
+//   new Character({
+//     id: 15,
+//     syllabograph: ['na'],
+//     logograph: [
+//       {
+//         logTransliteration: 'NA',
+//         logTranslation: '???'
+//       }
+//     ],
+//     cuneiform: {
+//       unicode: '1223E',
+//       variants: [
+//         {
+//           components: {
+//             horizontal: 1,
+//             glossenkeil: 2,
+//             vertical: 1
+//           }
+//         }
+//       ]
+//     }
+//   }),
 
-  new Character({
-    id: 16,
-    logograph: [{
-      logTranslation: '???',
-      logTransliteration: 'ÀR'
-    }, {
-      logTranslation: '???',
-      logTransliteration: 'ARAD'
-      }, {
-      logTranslation: '???',
-      logTransliteration: 'NÍTA'
-    }],
-    cuneiform: {
-      unicode: '12034',
-      variants: [{
-        components: {
-          horizontal: 1,
-          vertical: 1,
-          glossenkeil: 3
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 16,
+//     logograph: [{
+//       logTranslation: '???',
+//       logTransliteration: 'ÀR'
+//     }, {
+//       logTranslation: '???',
+//       logTransliteration: 'ARAD'
+//       }, {
+//       logTranslation: '???',
+//       logTransliteration: 'NÍTA'
+//     }],
+//     cuneiform: {
+//       unicode: '12034',
+//       variants: [{
+//         components: {
+//           horizontal: 1,
+//           vertical: 1,
+//           glossenkeil: 3
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 17,
-    syllabograph: ['mu'],
-    logograph: [
-      {
-        logTransliteration: 'MU',
-        logTranslation: '???'
-      },
-      {
-        logTransliteration: 'MUḪALDIM',
-        logTranslation: 'cook'
-      }
-    ],
-    cuneiform: {
-      unicode: '1222C',
-      variants: [{
-        components: {
-          glossenkeil: 4,
-          horizontal: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 17,
+//     syllabograph: ['mu'],
+//     logograph: [
+//       {
+//         logTransliteration: 'MU',
+//         logTranslation: '???'
+//       },
+//       {
+//         logTransliteration: 'MUḪALDIM',
+//         logTranslation: 'cook'
+//       }
+//     ],
+//     cuneiform: {
+//       unicode: '1222C',
+//       variants: [{
+//         components: {
+//           glossenkeil: 4,
+//           horizontal: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 20,
-    syllabograph: ['pár', 'bar', 'maš'],
-    logograph: [{
-        logTranslation: '???',
-        logTransliteration: 'BÁN'
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'BAR'
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'MAŠ'
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'MÁŠDA'
-    }],
-    cuneiform: {
-      unicode: '12047',
-      variants: [{
-        components: {
-          horizontal: 1,
-          vertical: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 20,
+//     syllabograph: ['pár', 'bar', 'maš'],
+//     logograph: [{
+//         logTranslation: '???',
+//         logTransliteration: 'BÁN'
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'BAR'
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'MAŠ'
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'MÁŠDA'
+//     }],
+//     cuneiform: {
+//       unicode: '12047',
+//       variants: [{
+//         components: {
+//           horizontal: 1,
+//           vertical: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 24,
-    syllabograph: ['ḫu'],
-    logograph: [{
-      logTranslation: 'bird',
-      logTransliteration: 'MUŠEN'
-    }],
-    cuneiform: {
-      unicode: '12137',
-      variants: [{
-        components: {
-          horizontal: 1,
-          vertical: 2,
-          glossenkeil: 1
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 24,
+//     syllabograph: ['ḫu'],
+//     logograph: [{
+//       logTranslation: 'bird',
+//       logTransliteration: 'MUŠEN'
+//     }],
+//     cuneiform: {
+//       unicode: '12137',
+//       variants: [{
+//         components: {
+//           horizontal: 1,
+//           vertical: 2,
+//           glossenkeil: 1
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 29,
-    syllabograph: ['rad/t'],
-    cuneiform: {
-      unicode: '122E5',
-      variants: [{
-        components: {
-          horizontal: 2,
-          vertical: 2
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 29,
+//     syllabograph: ['rad/t'],
+//     cuneiform: {
+//       unicode: '122E5',
+//       variants: [{
+//         components: {
+//           horizontal: 2,
+//           vertical: 2
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 30,
-    syllabograph: ['gi', 'ge'],
-    logograph: [{
-        logTranslation: 'reed',
-        logTransliteration: 'GI'
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'SI22',
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'SIG17'
-    }],
-    cuneiform: {
-      unicode: '12100',
-      variants: [{
-        fontset: FontSet.ULLIKUMMI_A,
-        category: SignVariantCategory.DEFAULT,
-        components: {
-          horizontal: 1,
-          vertical: 2,
-          diagonalAsc: 1,
-          glossenkeil: 3
-        }
-      }, {
-        fontset: FontSet.ULLIKUMMI_B,
-        category: SignVariantCategory.LATE,
-        components: {
-          horizontal: 1,
-          vertical: 2,
-          glossenkeil: 4
-        }
-      }]
-    }
-  }),
+//   new Character({
+//     id: 30,
+//     syllabograph: ['gi', 'ge'],
+//     logograph: [{
+//         logTranslation: 'reed',
+//         logTransliteration: 'GI'
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'SI22',
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'SIG17'
+//     }],
+//     cuneiform: {
+//       unicode: '12100',
+//       variants: [{
+//         fontset: FontSet.ULLIKUMMI_A,
+//         category: SignVariantCategory.DEFAULT,
+//         components: {
+//           horizontal: 1,
+//           vertical: 2,
+//           diagonalAsc: 1,
+//           glossenkeil: 3
+//         }
+//       }, {
+//         fontset: FontSet.ULLIKUMMI_B,
+//         category: SignVariantCategory.LATE,
+//         components: {
+//           horizontal: 1,
+//           vertical: 2,
+//           glossenkeil: 4
+//         }
+//       }]
+//     }
+//   }),
 
-  new Character({
-    id: 329,
-    syllabograph: ['kur'],
-    logograph: [{
-        logTranslation: 'land',
-        logTransliteration: 'KUR'
-      },
-      {
-        logTranslation: '???',
-        logTransliteration: 'GÀN'
-      }],
-    determiner: [{
-      detTranslation: 'land',
-      detTransliteration: 'KUR'
-    }],
-    cuneiform: {
-      unicode: '121B3',
-      variants: [{
-        components: {
-          glossenkeil: 3
-        }
-      }]
-    }
-  })
-];
+//   new Character({
+//     id: 329,
+//     syllabograph: ['kur'],
+//     logograph: [{
+//         logTranslation: 'land',
+//         logTransliteration: 'KUR'
+//       },
+//       {
+//         logTranslation: '???',
+//         logTransliteration: 'GÀN'
+//       }],
+//     determiner: [{
+//       detTranslation: 'land',
+//       detTransliteration: 'KUR'
+//     }],
+//     cuneiform: {
+//       unicode: '121B3',
+//       variants: [{
+//         components: {
+//           glossenkeil: 3
+//         }
+//       }]
+//     }
+//   })
+// ];
