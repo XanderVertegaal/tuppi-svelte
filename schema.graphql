@@ -78,7 +78,7 @@ input GameSettingsInput {
   inclDet: Boolean!
   inclLog: Boolean!
   inclSyll: Boolean!
-  numberOfExercises: Int!
+  numberOfAlternatives: Int!
   selectedIds: [String!]!
   translitToCun: Boolean!
 }

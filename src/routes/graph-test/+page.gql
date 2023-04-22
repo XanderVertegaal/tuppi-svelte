@@ -1,7 +1,7 @@
 query test_exercise {
   exercises(input: {
     selectedIds: ["1"],
-    numberOfExercises: 5,
+    numberOfAlternatives: 5,
     inclSyll: true,
     inclDet: true,
     inclLog: true,

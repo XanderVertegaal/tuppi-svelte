@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
 	import { getExercisesStore, type getExercises$input, type getExercises$result, type QueryResult } from "$houdini";
 	import type { GameSettingsInput } from "$houdini/runtime/generated";
 	import Game from "$lib/components/Game.svelte";
@@ -40,15 +39,15 @@
   }
 
   function handleGameResult(exercises: CustomEvent<Exercise[]>): void {
-    console.log('Handling game result!');
+    console.log('Handling game result!', exercises);
     gameState = GameState.FINISHED;
   }
 
   const gameSettingsForm: GameSettingsInput = {
     selectedIds: [],
-    numberOfExercises: 5,
-    inclDet: false,
-    inclLog: false,
+    numberOfAlternatives: 5,
+    inclDet: true,
+    inclLog: true,
     inclSyll: true,
     cunToTranslit: true,
     translitToCun: true
@@ -66,8 +65,8 @@
         <p>{gameSettingsForm.selectedIds.join(', ')}</p>
       </div>
       <div>
-        <label for="numEx">Number of exercises</label>
-        <input id="numEx" name="number-of-exercises" type="number" bind:value={gameSettingsForm.numberOfExercises}/>
+        <label for="numEx">Number of alternatives</label>
+        <input id="numEx" name="number-of-alternatives" type="number" bind:value={gameSettingsForm.numberOfAlternatives}/>
       </div>
       <div>
         <label for="inclDet">Include determinatives</label>
@@ -116,6 +115,7 @@
   {/await}
 {:else if gameState === GameState.FINISHED}
     <p>Game over!</p>
+    <button type="button" on:click={startGame}>Restart</button>
 {/if}
 
 <style lang="scss">

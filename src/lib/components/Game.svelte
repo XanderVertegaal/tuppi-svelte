@@ -9,8 +9,11 @@
   export let exercises: Mutable<Exercise[]>;
   let selectedExercise: Mutable<getExercises$result['exercises'][number]> | null = null;
 
+  $: totalExercises = exercises.length;
+  let currentExerciseNo = 1;
 
   $: if (exercises) {
+    console.log(exercises);
     selectNewExercise(exercises);
   }
 
@@ -31,13 +34,16 @@
       selectedExercise.correct = true;
     } else {
       selectedExercise.correct = false;
+      totalExercises++;
     }
+    currentExerciseNo++;
     selectNewExercise(exercises);
   }
 </script>
 
 {#if selectedExercise}
-  {#if selectedExercise.questionType === 'TRANS_TO_CUN_SYLL'}
+  <h5>Exercise {currentExerciseNo} of {totalExercises}</h5>
+  {#if selectedExercise.questionType.startsWith('TRANS_TO_CUN')}
     <h2>{selectedExercise.character.syllValues?.join(', ')}</h2>
     <h3>Select the corresponding cuneiform sign</h3>
     <ul class="answers">
