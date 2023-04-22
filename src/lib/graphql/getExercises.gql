@@ -1,0 +1,15 @@
+query getExercises($input: GameSettingsInput!) {
+  exercises(input: $input) {
+    character {
+      id
+      unicode
+      syllValues
+    },
+    correct,
+    questionType,
+    answers {
+      correct
+      displayValue
+    }
+  }
+}

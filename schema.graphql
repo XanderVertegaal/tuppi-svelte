@@ -1,3 +1,8 @@
+type Answer {
+  correct: Boolean!
+  displayValue: String!
+}
+
 type Character {
   detValues: [Determinative!]
   id: ID!
@@ -55,10 +60,27 @@ type DifferenceOneVariants {
   verticalPlus: [CompVariant!]!
 }
 
+type Exercise {
+  answers: [Answer!]!
+  character: Character!
+  correct: Boolean!
+  questionType: Question!
+}
+
 enum FontSet {
   ULLIKUMMI_A
   ULLIKUMMI_B
   ULLIKUMMI_C
+}
+
+input GameSettingsInput {
+  cunToTranslit: Boolean!
+  inclDet: Boolean!
+  inclLog: Boolean!
+  inclSyll: Boolean!
+  numberOfExercises: Int!
+  selectedIds: [String!]!
+  translitToCun: Boolean!
 }
 
 type Logograph {
@@ -76,8 +98,18 @@ type Query {
   allChars: [Character!]!
   char(id: ID!): Character
   compVariants(input: CompVariantsInput!): CompVariantData!
+  exercises(input: GameSettingsInput!): [Exercise!]!
   user(id: ID!): User
   users: [User!]!
+}
+
+enum Question {
+  CUN_TO_TRANS_DET
+  CUN_TO_TRANS_LOG
+  CUN_TO_TRANS_SYLL
+  TRANS_TO_CUN_DET
+  TRANS_TO_CUN_LOG
+  TRANS_TO_CUN_SYLL
 }
 
 enum SignVariantCategory {

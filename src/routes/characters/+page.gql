@@ -1,4 +1,4 @@
-query trainer_allChars {
+query allCharacters {
   allChars {
     id
     unicode

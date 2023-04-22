@@ -3,9 +3,8 @@
   import type { PageData } from './$houdini';
   export let data: PageData;
 
-  $: ({ User } = data)
+  $: ({test_exercise} = data);
 
-  $: console.log(get(User).data?.user?.lastName)
+  $: console.log($test_exercise.data);
+
 </script>
-
-<p>Hi, my name is {$User.data?.user?.firstName}.</p>

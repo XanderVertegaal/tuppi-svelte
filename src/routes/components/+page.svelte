@@ -27,10 +27,16 @@
   $: ({CompVariants} = data);
   $: baseCharacters = getBaseCharacters($CompVariants.data?.compVariants.identicalVariants ?? []);
   $: similarCharacters = getDisplaySimilarCharacters($CompVariants.data?.compVariants.similarVariants ?? null);
-  $: browser && CompVariants.fetch({
-    variables: {input: form},
-    policy: "CacheAndNetwork"
-  });
+  $: form && fetchVariants();
+
+  function fetchVariants(): void {
+    if (browser) {
+      CompVariants.fetch({
+        variables: {input: form},
+        policy: "CacheAndNetwork"
+      });
+    }
+  }
 
 
   function getBaseChar(compVariant: CompVariants$result['compVariants']['identicalVariants'][0]): BaseCharacter | null {

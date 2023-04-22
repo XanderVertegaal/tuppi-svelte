@@ -1,53 +1,42 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { trainer_allCharsStore } from "$houdini";
+	import { getExercisesStore, type getExercises$input, type getExercises$result, type QueryResult } from "$houdini";
+	import type { GameSettingsInput } from "$houdini/runtime/generated";
 	import Game from "$lib/components/Game.svelte";
 	import SignCard from "$lib/components/SignCard.svelte";
 	import { GameState, type Exercise } from "$lib/types";
-	import { get } from "svelte/store";
-	import type { CreateExercise } from "../api/create-exercise/+server";
-  import type { PageData } from './$houdini';
-  export let data: PageData;
+	import { onMount } from "svelte";
+	import type { PageData } from "./$houdini";
+  export let data: PageData
 
-  $: ({trainer_allChars} = data);
+  $: ({ allCharacters } = data);
+  
+  const exerciseStore = new getExercisesStore();
+
+  async function fetchExercises(): Promise<QueryResult<getExercises$result, getExercises$input>> {
+    return exerciseStore.fetch({
+      variables: {
+        input: gameSettingsForm
+      },
+      policy: "CacheAndNetwork"
+    });
+  }
 
   let gameState: GameState = GameState.PREPARING; 
-  let selectedIds: string[] = [];
   let exercises: Exercise[] = [];
 
   function selectIds(id: string): void {
-    if (selectedIds.includes(id)) {
-      selectedIds = selectedIds.filter(cardId => cardId !== id);
+    if (gameSettingsForm.selectedIds.includes(id)) {
+      gameSettingsForm.selectedIds = gameSettingsForm.selectedIds.filter(cardId => cardId !== id);
       return;
     }
-    selectedIds = [...selectedIds, id];
+    gameSettingsForm.selectedIds = [...gameSettingsForm.selectedIds, id];
   }
 
   async function startGame(): Promise<void> {
     gameState = GameState.RUNNING;
-
-    if (browser) {
-      const requestBody: CreateExercise = {
-        selectedIds,
-        gameSettings: {
-          determiners: true,
-          logograms: true,
-          syllabograms: true,
-          numberOfAlternatives: 7
-        }
-      }
-
-      const response = await fetch('api/create-exercise', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
-  
-      const json = await response.json() as Exercise[];
-      exercises = json;
-    };
+    const results = await fetchExercises();
+    exercises = results?.data?.exercises || [];
   }
 
   function handleGameResult(exercises: CustomEvent<Exercise[]>): void {
@@ -55,27 +44,65 @@
     gameState = GameState.FINISHED;
   }
 
+  const gameSettingsForm: GameSettingsInput = {
+    selectedIds: [],
+    numberOfExercises: 5,
+    inclDet: false,
+    inclLog: false,
+    inclSyll: true,
+    cunToTranslit: true,
+    translitToCun: true
+  }
+
 </script>
 
 {#if gameState === GameState.PREPARING}
 <article class="game-preparation">
   <section class="selected-controls">
-    <p>Selected characters: {selectedIds.join(', ')}</p>
-    
-    {#if selectedIds.length > 0}
-    <button on:click={startGame}>Start</button>
+    {#if gameSettingsForm.selectedIds.length > 0}
+    <form class="game-settings">
+      <div>
+        <label for="selIds">Selected characters:</label>
+        <p>{gameSettingsForm.selectedIds.join(', ')}</p>
+      </div>
+      <div>
+        <label for="numEx">Number of exercises</label>
+        <input id="numEx" name="number-of-exercises" type="number" bind:value={gameSettingsForm.numberOfExercises}/>
+      </div>
+      <div>
+        <label for="inclDet">Include determinatives</label>
+        <input id="inclDet" name="include-determinatives" type="checkbox" bind:checked={gameSettingsForm.inclDet}/>
+      </div>
+      <div>
+        <label for="inclLog">Include logograms</label>
+        <input id="inclLog" name="include-logograms" type="checkbox" bind:checked={gameSettingsForm.inclLog}/>
+      </div>
+      <div>
+        <label for="inclSyll">Include syllabograms</label>
+        <input id="inclSyll" name="include-syllabograms" type="checkbox" bind:checked={gameSettingsForm.inclSyll}/>
+      </div>
+      <div>
+        <label for="cunToTranslit">Cuneiform to transliteration</label>
+        <input id="cunToTranslit" name="hittite-to-english" type="checkbox" bind:checked={gameSettingsForm.cunToTranslit}/>
+      </div>
+      <div>
+        <label for="translitToCun">Transliteration to cuneiform</label>
+        <input id="translitToCun" name="english-to-hittite" type="checkbox" bind:checked={gameSettingsForm.translitToCun}/>
+      </div>
+      <button type="button" on:click={startGame}>Start</button>
+    </form>
     {/if}
   </section>
   
-  {#if $trainer_allChars?.data?.allChars}
+  {#if $allCharacters?.data?.allChars}
     <ul class="sign-card-list">
-      {#each $trainer_allChars.data.allChars as character}
-        <SignCard {character} selected={selectedIds.includes(character.id)} on:select={event => selectIds(event.detail.id)} />
+      {#each $allCharacters.data.allChars as character}
+        <SignCard {character} selected={gameSettingsForm.selectedIds.includes(character.id)} on:select={event => selectIds(event.detail.id)} />
       {/each}
     </ul>
-  {:else if $trainer_allChars?.errors}
+  {:else if $allCharacters?.errors}
     <p>Could not load characters. Sorry about that!</p>
-  {:else if $trainer_allChars?.fetching}
+  {:else if $allCharacters?.fetching}
     <p>Loading characters...</p>
   {/if}
 </article>

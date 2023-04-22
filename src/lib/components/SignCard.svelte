@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FontSet, type FontSet$options, type trainer_allChars$result } from "$houdini";
+	import { FontSet, type FontSet$options } from "$houdini";
 	import type { SignCardCharacter } from "$lib/types";
 	import { fontsetMapping, renderUnicode } from "$lib/utils";
 	import { createEventDispatcher } from "svelte";
