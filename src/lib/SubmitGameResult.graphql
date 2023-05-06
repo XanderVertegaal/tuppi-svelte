@@ -1,0 +1,5 @@
+mutation SubmitGameResult($gameResults: [GameResult!]!) {
+  submitGameResult(gameResults: $gameResults) {
+    id
+  }
+}

@@ -7,6 +7,17 @@ const config = {
     },
     "plugins": {
         "houdini-svelte": {}
+    },
+    "scalars": {
+        ID: {
+            type: "number",
+            unmarshal(value) {
+                return value ? parseInt(value) : null
+            },
+            marshal(value) {
+                return value ? value.toString() : null
+            }
+        }
     }
 }
 

@@ -1,3 +1,5 @@
+import type { Question$options, allCharacters$result, getExercises$result } from "$houdini";
+
 export type SignCardCharacter = Pick<allCharacters$result['allChars'][0], 'id' | 'unicode'>;
 export type Exercise = getExercises$result['exercises'][number];
 export type Answer = Exercise['answers'][number];
@@ -17,3 +19,8 @@ export enum GameState {
   FINISHED
 }
 
+export interface GameResult {
+  characterId: number;
+  questionType: Question$options;
+  correct: boolean;
+}[]

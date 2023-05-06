@@ -4,10 +4,10 @@ type Answer {
 }
 
 type Character {
-  detValues: [Determinative!]
+  detValues: [Determinative!]!
   id: ID!
-  logValues: [Logograph!]
-  syllValues: [String!]
+  logValues: [Logograph!]!
+  syllValues: [String!]!
   unicode: String!
   variants: [CharacterVariant!]
 }
@@ -73,13 +73,19 @@ enum FontSet {
   ULLIKUMMI_C
 }
 
+input GameResult {
+  characterId: ID!
+  correct: Boolean!
+  questionType: Question!
+}
+
 input GameSettingsInput {
   cunToTranslit: Boolean!
   inclDet: Boolean!
   inclLog: Boolean!
   inclSyll: Boolean!
   numberOfAlternatives: Int!
-  selectedIds: [String!]!
+  selectedIds: [Int!]!
   translitToCun: Boolean!
 }
 
@@ -92,6 +98,7 @@ type Logograph {
 type Mutation {
   createUser(email: String!, firstName: String!, lastName: String!): User
   deleteUser(id: ID!): User
+  submitGameResult(gameResults: [GameResult!]!): [UserSignProgress!]!
 }
 
 type Query {
@@ -123,4 +130,11 @@ type User {
   firstName: String!
   id: ID!
   lastName: String!
+}
+
+type UserSignProgress {
+  character: Character!
+  id: ID!
+  progress: Float!
+  user: User!
 }

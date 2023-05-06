@@ -9,7 +9,7 @@
   export let selected: boolean = false;
   export let fontSet: FontSet$options = FontSet.ULLIKUMMI_A;
 
-  const dispatch = createEventDispatcher<{select: {id: string}}>();
+  const dispatch = createEventDispatcher<{select: {id: number}}>();
 
   function selectCharacter() {
     dispatch("select", {id: character.id});

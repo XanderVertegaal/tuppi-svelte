@@ -1,102 +1,80 @@
 <script lang="ts">
-	import { getExercisesStore, type getExercises$input, type getExercises$result, type QueryResult } from "$houdini";
-	import type { GameSettingsInput } from "$houdini/runtime/generated";
 	import Game from "$lib/components/Game.svelte";
 	import SignCard from "$lib/components/SignCard.svelte";
-	import { GameState, type Exercise } from "$lib/types";
-	import { onMount } from "svelte";
+	import { GameState, type Exercise, type GameResult } from "$lib/types";
 	import type { PageData } from "./$houdini";
+	import { mockData } from "./mockData";
+  import { SubmitGameResultStore, getExercisesStore } from '$houdini';
+  import type { Question$options } from '$houdini';
+	import GameSettingsForm from "$lib/components/GameSettingsForm.svelte";
+	import type { GameSettingsInput } from "$houdini/runtime/generated";
   export let data: PageData
 
   $: ({ allCharacters } = data);
   
   const exerciseStore = new getExercisesStore();
 
-  async function fetchExercises(): Promise<QueryResult<getExercises$result, getExercises$input>> {
-    return exerciseStore.fetch({
-      variables: {
-        input: gameSettingsForm
-      },
-      policy: "CacheAndNetwork"
-    });
-  }
-
   let gameState: GameState = GameState.PREPARING; 
   let exercises: Exercise[] = [];
 
-  function selectIds(id: string): void {
-    if (gameSettingsForm.selectedIds.includes(id)) {
-      gameSettingsForm.selectedIds = gameSettingsForm.selectedIds.filter(cardId => cardId !== id);
+  let selectedIds: number[] = [];
+
+  function selectId(id: number): void {
+    if (selectedIds.includes(id)) {
+      selectedIds = selectedIds.filter(cardId => cardId !== id);
       return;
     }
-    gameSettingsForm.selectedIds = [...gameSettingsForm.selectedIds, id];
+    selectedIds = [...selectedIds, id];
   }
 
-  async function startGame(): Promise<void> {
+  async function startGame(gameSettings: GameSettingsInput): Promise<void> {
     gameState = GameState.RUNNING;
-    const results = await fetchExercises();
+    const results = await exerciseStore.fetch({
+      variables: {
+        input: gameSettings
+      },
+      policy: "CacheAndNetwork"
+    });
     exercises = results?.data?.exercises || [];
   }
 
   function handleGameResult(exercises: CustomEvent<Exercise[]>): void {
-    console.log('Handling game result!', exercises);
+    console.log('Handling game result!', exercises.detail);
     gameState = GameState.FINISHED;
   }
 
-  const gameSettingsForm: GameSettingsInput = {
-    selectedIds: [],
-    numberOfAlternatives: 5,
-    inclDet: true,
-    inclLog: true,
-    inclSyll: true,
-    cunToTranslit: true,
-    translitToCun: true
+  const submitGameResults = new SubmitGameResultStore();
+
+  async function handleFakeGameResults(): Promise<void> {
+    gameState = GameState.FINISHED;
+    const mock = mockData;
+    const requestData: GameResult[] = mock.map(exercise => {
+      return {
+        characterId: exercise.character.id,
+        questionType: exercise.questionType as Question$options,
+        correct: exercise.correct
+      }
+    })
+
+    await submitGameResults.mutate({gameResults: requestData});
   }
 
 </script>
 
+<button on:click="{handleFakeGameResults}">Handle fake game results</button>
+
 {#if gameState === GameState.PREPARING}
 <article class="game-preparation">
   <section class="selected-controls">
-    {#if gameSettingsForm.selectedIds.length > 0}
-    <form class="game-settings">
-      <div>
-        <label for="selIds">Selected characters:</label>
-        <p>{gameSettingsForm.selectedIds.join(', ')}</p>
-      </div>
-      <div>
-        <label for="numEx">Number of alternatives</label>
-        <input id="numEx" name="number-of-alternatives" type="number" bind:value={gameSettingsForm.numberOfAlternatives}/>
-      </div>
-      <div>
-        <label for="inclDet">Include determinatives</label>
-        <input id="inclDet" name="include-determinatives" type="checkbox" bind:checked={gameSettingsForm.inclDet}/>
-      </div>
-      <div>
-        <label for="inclLog">Include logograms</label>
-        <input id="inclLog" name="include-logograms" type="checkbox" bind:checked={gameSettingsForm.inclLog}/>
-      </div>
-      <div>
-        <label for="inclSyll">Include syllabograms</label>
-        <input id="inclSyll" name="include-syllabograms" type="checkbox" bind:checked={gameSettingsForm.inclSyll}/>
-      </div>
-      <div>
-        <label for="cunToTranslit">Cuneiform to transliteration</label>
-        <input id="cunToTranslit" name="hittite-to-english" type="checkbox" bind:checked={gameSettingsForm.cunToTranslit}/>
-      </div>
-      <div>
-        <label for="translitToCun">Transliteration to cuneiform</label>
-        <input id="translitToCun" name="english-to-hittite" type="checkbox" bind:checked={gameSettingsForm.translitToCun}/>
-      </div>
-      <button type="button" on:click={startGame}>Start</button>
-    </form>
+    {#if selectedIds.length > 0}
+    <GameSettingsForm bind:selectedIds={selectedIds} on:startGame={event => startGame(event.detail)} />
     {/if}
   </section>
   
   {#if $allCharacters?.data?.allChars}
     <ul class="sign-card-list">
       {#each $allCharacters.data.allChars as character}
-        <SignCard {character} selected={gameSettingsForm.selectedIds.includes(character.id)} on:select={event => selectIds(event.detail.id)} />
+        <SignCard {character} selected={selectedIds.includes(character.id)} on:select={event => selectId(event.detail.id)} />
       {/each}
     </ul>
   {:else if $allCharacters?.errors}
@@ -105,6 +83,7 @@
     <p>Loading characters...</p>
   {/if}
 </article>
+
 {:else if gameState === GameState.RUNNING}
   {#await exercises}
     <p>Loading game...</p>
@@ -113,9 +92,19 @@
   {:catch}
     <p>Game could not be loaded. Sorry about that!</p>
   {/await}
+  
 {:else if gameState === GameState.FINISHED}
     <p>Game over!</p>
-    <button type="button" on:click={startGame}>Restart</button>
+
+    <p>Score: {exercises.filter(exercise => exercise.correct).length}/{exercises.length}</p>
+    <p>Mistakes:</p>
+    <ul>
+      {#each exercises.filter(exercise => !exercise.correct) as exercise}
+        <li>{exercise.character.id} - {exercise.questionType}</li>
+      {/each}
+    </ul>
+
+    <!-- <button type="button" on:click={startGame}>Restart</button> -->
 {/if}
 
 <style lang="scss">
@@ -129,10 +118,6 @@
   .selected-controls {
     display: flex;
     justify-content: space-between;
-
-    p {
-      overflow-x: hidden;
-    }
   }
 
 </style>

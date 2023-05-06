@@ -1,3 +1,5 @@
-<h1>Welcome to Tuppi!</h1>
+<h2>Hi User</h2>
 
-<p>Tuppi is a tool for learning Hittite cuneiform.</p>
+<h3>Welcome to Tuppi!</h3>
+
+<h5>Current progress: 0 / 31 signs</h5>

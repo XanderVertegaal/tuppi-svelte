@@ -8,12 +8,12 @@
 
   export let exercises: Mutable<Exercise[]>;
   let selectedExercise: Mutable<getExercises$result['exercises'][number]> | null = null;
+  let seenExercises: Exercise[] = [];
 
+  $: totalSeenExercises = seenExercises.length + 1;
   $: totalExercises = exercises.length;
-  let currentExerciseNo = 1;
 
   $: if (exercises) {
-    console.log(exercises);
     selectNewExercise(exercises);
   }
 
@@ -22,7 +22,7 @@
     if (newExercise) {
       selectedExercise = newExercise;
     } else {
-      dispatch('gameResult', exercises);
+      dispatch('gameResult', { exercises: seenExercises });
     }
   }
 
@@ -30,19 +30,23 @@
     if (!selectedExercise) {
       return;
     }
+
+    const selected = {...selectedExercise};
+
     if (answer.correct) {
+      selected.correct = true;
       selectedExercise.correct = true;
+      selectNewExercise(exercises);
     } else {
-      selectedExercise.correct = false;
-      totalExercises++;
+      selected.correct = false;
+      exercises = [...exercises, selected];
     }
-    currentExerciseNo++;
-    selectNewExercise(exercises);
+    seenExercises = [...seenExercises, selected];
   }
 </script>
 
 {#if selectedExercise}
-  <h5>Exercise {currentExerciseNo} of {totalExercises}</h5>
+  <h5>Exercise {totalSeenExercises} of {totalExercises}</h5>
   {#if selectedExercise.questionType.startsWith('TRANS_TO_CUN')}
     <h2>{selectedExercise.character.syllValues?.join(', ')}</h2>
     <h3>Select the corresponding cuneiform sign</h3>
