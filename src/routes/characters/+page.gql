@@ -1,6 +1,6 @@
 query allCharacters {
-  allChars {
-    id
-    unicode
-  }
+	allChars {
+		id
+		unicode
+	}
 }

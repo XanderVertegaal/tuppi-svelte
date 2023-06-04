@@ -1,11 +1,11 @@
-import { setSession } from "$houdini";
-import type { Handle } from "@sveltejs/kit";
+import { setSession } from '$houdini';
+import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
-  const user = { name: 'Xander' };
+	const user = { name: 'Xander' };
 
-  setSession(event, { user });
+	setSession(event, { user });
 
-  const response = await resolve(event);
-  return response
+	const response = await resolve(event);
+	return response;
 };

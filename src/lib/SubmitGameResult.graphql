@@ -1,5 +1,5 @@
 mutation SubmitGameResult($gameResults: [GameResult!]!) {
-  submitGameResult(gameResults: $gameResults) {
-    id
-  }
+	submitGameResult(gameResults: $gameResults) {
+		id
+	}
 }
