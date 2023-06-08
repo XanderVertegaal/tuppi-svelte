@@ -1,5 +1,15 @@
 mutation SubmitGameResult($gameResults: [GameResult!]!) {
 	submitGameResult(gameResults: $gameResults) {
 		id
+		character {
+			id
+			unicode
+		},
+		progress
+		user {
+			id
+			firstName
+			lastName
+		}
 	}
 }

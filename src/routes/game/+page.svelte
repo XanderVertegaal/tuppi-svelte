@@ -1,31 +1,38 @@
 <script lang="ts">
 	import { SubmitGameResultStore, type Question$options } from '$houdini';
-	import { GameState, type Answer, type GameResult, type Mutable, type Exercise } from '$lib/types';
+	import { GameState, type Answer, type GameResult, type Exercise } from '$lib/types';
 	import { renderUnicode } from '$lib/utils';
 	import { onMount } from 'svelte';
-	import { mockData } from '../characters/mockData';
+	import { mockGameResults } from './mockData.js';
+
+	interface GameResult {
+		correct: boolean;
+		characterId: string;
+		questionType: Question$options;
+	};
 
 	export let data;
+	export let exercises = data.exercises;
 
-	export let exercises: Mutable<Exercise[]> = data.exercises ?? [];
-	let selectedExerciseIndex = 0;
-	let seenExercises: Exercise[] = [];
+	let selectedExercise: Exercise | null = null;
+	let gameResults: GameResult[] = [];
 
 	const submitGameResults = new SubmitGameResultStore();
 
 	let gameState: GameState = GameState.RUNNING;
 
-  $: selectedExercise = exercises[selectedExerciseIndex]
-	$: totalSeenExercises = seenExercises.length;
+	$: totalGameResults = gameResults.length;
 
 	$: if (exercises) {
-		console.log('Exercises updated:', exercises);
-		selectNewExercise(exercises);
+		selectedExercise = exercises.shift() ?? null;
+		if (!selectedExercise && gameResults.length > 0) {
+			gameState = GameState.FINISHED;
+			handleGameResult(gameResults);
+		}
 	}
 
   onMount(() => {
     function handleKeydown(event: KeyboardEvent): void {
-      console.log('Key pressed!');
       if (!selectedExercise) {
         return;
       }
@@ -36,9 +43,7 @@
       }
 
       const selectedAnswer = selectedExercise.answers[pressedKey - 1];
-      console.log('Running check...')
       checkAnswer(selectedAnswer);
-
     }
 
     window.addEventListener('keydown', handleKeydown);
@@ -49,32 +54,24 @@
   });
 
 
-	function handleGameResult(exercises: Exercise[]): void {
-		console.log('Handling game result!', exercises);
+	async function handleGameResult(results: GameResult[]): Promise<void> {
+		console.log('Handling game result!', results);
 		// Send to server here.
+
+		submitGameResults.mutate({
+			gameResults: results
+		}).then(mutationResult => {
+			console.log('Mutation result:', mutationResult);
+		}).catch(error => {
+			console.error('Mutation error:', error);
+		});
 	}
 
 	async function handleFakeGameResults(): Promise<void> {
-		const mock = mockData;
-		const requestData: GameResult[] = mock.map(exercise => {
-			return {
-				characterId: exercise.character.id,
-				questionType: exercise.questionType as Question$options,
-				correct: exercise.correct
-			};
-		});
-
-		const mutationResults = await submitGameResults.mutate({ gameResults: requestData });
-    console.log('Mutation results:', mutationResults);
-	}
-
-	function selectNewExercise(exercises: Exercise[]): void {
-		const newExercise = exercises.find(exercise => exercise.correct === false);
-		if (newExercise) {
-			selectedExercise = newExercise;
-		} else {
-			handleGameResult(seenExercises);
-		}
+		gameState = GameState.FINISHED;
+		gameResults = mockGameResults;
+		handleGameResult(mockGameResults);
+		selectedExercise = null;
 	}
 
 	function checkAnswer(answer: Answer): void {
@@ -82,31 +79,28 @@
 			return;
 		}
 
-    console.log('Evaluating answer:', answer)
-
-		const selectedCopy = {
-      ...selectedExercise,
-      answers: [ ...selectedExercise.answers ]
-     };
-
-		if (answer.correct) {
-			selectedCopy.correct = true;
-			selectedExercise.correct = true;
-			selectNewExercise(exercises);
-		} else {
-      selectedCopy.correct = false;
-      selectedExercise.correct = false;
-      exercises.shift();
-			exercises = [...exercises, selectedCopy];
+		const newGameResult: GameResult = {
+			characterId: selectedExercise.character.id,
+			questionType: selectedExercise.questionType as Question$options,
+			correct: answer.correct
 		}
-		seenExercises = [...seenExercises, selectedCopy];
+
+		gameResults = [...gameResults, newGameResult];
+
+		// Move wrong questions to the end of the queue.
+		if (answer.correct === false) {
+			exercises.push(selectedExercise);
+		}
+
+		// Trigger reactivity
+		exercises = [...exercises];
 	}
 </script>
 
 <button on:click={handleFakeGameResults}>Handle fake game results</button>
 
-{#if selectedExerciseIndex}
-	<h5>Exercise {selectedExerciseIndex} of {exercises.length}</h5>
+{#if selectedExercise !== null}
+	<h5>Exercise {totalGameResults + 1} of {totalGameResults + exercises.length + 1}</h5>
 	{#if selectedExercise.questionType.startsWith('TRANS_TO_CUN')}
 		<h2>{selectedExercise.character.syllValues?.join(', ')}</h2>
 		<h3>Select the corresponding cuneiform sign</h3>
@@ -130,18 +124,16 @@
 			{/each}
 		</ul>
 	{/if}
-{:else}
-	<p>There are no more exercises to do.</p>
 {/if}
 
 {#if gameState === GameState.FINISHED}
 	<p>Game over!</p>
 
-	<p>Score: {exercises.filter((exercise) => exercise.correct).length}/{exercises.length}</p>
+	<p>Score: {gameResults.filter(result => result.correct).length}/{gameResults.length}</p>
 	<p>Mistakes:</p>
 	<ul>
-		{#each exercises.filter((exercise) => !exercise.correct) as exercise}
-			<li>{exercise.character.id} - {exercise.questionType}</li>
+		{#each gameResults.filter(result => !result.correct) as result}
+			<li>{result.characterId} - {result.questionType}</li>
 		{/each}
 	</ul>
 

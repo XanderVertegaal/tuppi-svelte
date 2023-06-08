@@ -1,10 +1,11 @@
-import { getExercisesStore } from '$houdini';
+import { getExercisesStore, redirect } from '$houdini';
 import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
 import { get } from 'svelte/store';
-import { redirect } from '@sveltejs/kit';
 
 export async function load() {
+	// const gameSettings = get(gameSettingsStore);
 	const gameSettings = get(gameSettingsStore);
+	console.log('Game settings:', gameSettings);
 
 	if (!gameSettings) {
     throw redirect(302, '/characters');

@@ -1,5 +1,5 @@
 import { FontSet } from '$houdini';
-import type { SignComponents } from './types';
+import type { DeepMutable, SignComponents } from './types';
 export function renderUnicode(unicodeString: string): string {
 	return String.fromCodePoint(parseInt(unicodeString, 16));
 }
