@@ -1,25 +1,27 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import type {
-		characters_char,
-		characters_char$result,
-		CompVariants$result,
-		FontSet$options
-	} from '$houdini';
 	import SignCard from '$lib/components/SignCard.svelte';
-	import type { SignCardCharacter, SignComponents } from '$lib/types';
-	import { fontsetMapping, getTypedKeys, renderUnicode } from '$lib/utils';
-	import type { PageData } from './$houdini';
+	import type { SignComponents } from '$lib/types';
+	import { fontsetMapping, renderUnicode } from '$lib/utils';
+	import type { PageServerData } from './$types';
+	import type { ComparableVariant, SimilarVariants } from '$lib/findSimilarCharacters';
+	import type { FontSet } from '@prisma/client';
+	import { browser } from '$app/environment';
 
-	export let data: PageData;
+	export let data: PageServerData;
+
+	$: ({ identicalVariants, similarVariants } = data);
 
 	interface BaseCharacter {
-		fontSet: FontSet$options;
-		character: SignCardCharacter;
+		fontSet: FontSet;
+		character: {
+			id: number;
+			unicode: string;
+		};
 	}
 
-	type SimilarCharacters = CompVariants$result['compVariants']['similarVariants'];
-	type DisplaySimilarVariants = { [key in keyof SimilarCharacters]: BaseCharacter[] };
+	type DisplaySimilarVariants = {
+		[key in keyof SimilarVariants]: BaseCharacter[];
+	};
 
 	const form: SignComponents = {
 		horizontal: 0,
@@ -29,60 +31,57 @@
 		diagonalDesc: 0
 	};
 
-	$: ({ CompVariants } = data);
-	$: baseCharacters = getBaseCharacters($CompVariants.data?.compVariants.identicalVariants ?? []);
-	$: similarCharacters = getDisplaySimilarCharacters(
-		$CompVariants.data?.compVariants.similarVariants ?? null
-	);
+	// Base characters are shown at the top of the page: they are currently selected.
+	$: baseCharacters = getBaseCharacters(identicalVariants ?? []);
+
+	// Similar characters are shown next to the form.
+	$: similarCharacters = getDisplaySimilarCharacters(similarVariants ?? null);
 	$: form && fetchVariants();
 
-	function fetchVariants(): void {
+	async function fetchVariants(): Promise<void> {
 		if (browser) {
-			CompVariants.fetch({
-				variables: { input: form },
-				policy: 'CacheAndNetwork'
+			const response = await fetch('/api/components', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(form)
 			});
+
+			if (response.ok) {
+				const data = await response.json();
+				identicalVariants = data.identicalVariants;
+				similarVariants = data.similarVariants;
+			} else {
+				console.error('Error fetching variants');
+			}
 		}
 	}
 
-	function getBaseChar(
-		compVariant: CompVariants$result['compVariants']['identicalVariants'][0]
-	): BaseCharacter | null {
-		const category = compVariant.category;
-		const categoryVariant = compVariant.character.variants?.find(
-			(variant) => variant.category === category
-		);
-		if (categoryVariant) {
-			return {
-				fontSet: categoryVariant.fontSet,
-				character: {
-					id: compVariant.character.id,
-					unicode: compVariant.character.unicode
-				}
-			};
-		}
-		return null;
-	}
 
-	function getBaseCharacters(
-		identicalVariants: CompVariants$result['compVariants']['identicalVariants'] | null
+	function getBaseCharacters(identicalVariants: ComparableVariant[]
 	): BaseCharacter[] {
 		const baseCharacters: BaseCharacter[] = [];
 		if (!identicalVariants) {
 			return baseCharacters;
 		}
-		identicalVariants.forEach((variant) => {
-			const baseChar = getBaseChar(variant);
-			if (baseChar) {
-				baseCharacters.push(baseChar);
+		identicalVariants.forEach(variant => {
+			const category = variant.category;
+			const categoryVariant = variant.character.variants?.find(variant => variant.category === category);
+			if (categoryVariant) {
+				baseCharacters.push({
+					fontSet: categoryVariant.fontSet,
+					character: {
+						id: variant.character.id,
+						unicode: variant.character.unicode
+					}
+				})
 			}
 		});
 		return baseCharacters;
 	}
 
-	function getDisplaySimilarCharacters(
-		similarCharacters: SimilarCharacters | null
-	): DisplaySimilarVariants {
+	function getDisplaySimilarCharacters(similarCharacters: SimilarVariants | null): DisplaySimilarVariants {
 		if (!similarCharacters) {
 			return {
 				verticalMinus: [],
@@ -113,29 +112,25 @@
 	}
 </script>
 
-{#if $CompVariants.fetching}
-	<p>Loading...</p>
-{:else}
-	<article>
-		{#if baseCharacters.length > 0}
-			<section class="gallery">
-				<ul>
-					{#each baseCharacters as baseChar}
-						<li>
-							<SignCard
-								fontSet={baseChar.fontSet}
-								character={baseChar.character}
-								enableSelect={false}
-							/>
-						</li>
-					{/each}
-				</ul>
-			</section>
-		{:else}
-			<p>No base characters found</p>
-		{/if}
-	</article>
-{/if}
+<article>
+	{#if baseCharacters.length > 0}
+		<section class="gallery">
+			<ul>
+				{#each baseCharacters as baseChar}
+					<li>
+						<SignCard
+							fontSet={baseChar.fontSet}
+							character={baseChar.character}
+							enableSelect={false}
+						/>
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{:else}
+		<p>No base characters found</p>
+	{/if}
+</article>
 
 <table>
 	<tbody>

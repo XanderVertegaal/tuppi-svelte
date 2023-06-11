@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int                @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  userSignProgress UserSignProgress[]
+}
+
+model UserSignProgress {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  character   Character @relation(fields: [characterId], references: [id])
+  characterId Int
+  progress    Float     @default(0)
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@unique([userId, characterId])
+}
+
+model Character {
+  id               Int                @id @default(autoincrement())
+  unicode          String             @unique
+  variants         CharacterVariant[]
+  syllValues       String[]
+  logValues        Logograph[]
+  detValues        Determinative[]
+  userSignProgress UserSignProgress[]
+}
+
+model Logograph {
+  id                 Int       @id @default(autoincrement())
+  logTranslation     String
+  logTransliteration String
+  character          Character @relation(fields: [characterId], references: [id])
+  characterId        Int
+}
+
+model Determinative {
+  id                 Int       @id @default(autoincrement())
+  detTranslation     String
+  detTransliteration String
+  character          Character @relation(fields: [characterId], references: [id])
+  characterId        Int
+}
+
+model CharacterVariant {
+  id          Int                 @id @default(autoincrement())
+  category    SignVariantCategory @default(DEFAULT)
+  character   Character           @relation(fields: [characterId], references: [id])
+  characterId Int
+  fontSet     FontSet             @default(ULLIKUMMI_A)
+
+  vertical     Int @default(0)
+  horizontal   Int @default(0)
+  glossenkeil  Int @default(0)
+  diagonalAsc  Int @default(0)
+  diagonalDesc Int @default(0)
+}
+
+enum SignVariantCategory {
+  DEFAULT
+  LATE
+  MIDDLE
+  EARLY
+}
+
+enum FontSet {
+  ULLIKUMMI_A
+  ULLIKUMMI_B
+  ULLIKUMMI_C
+}

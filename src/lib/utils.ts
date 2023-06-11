@@ -1,5 +1,6 @@
-import { FontSet } from '$houdini';
-import type { DeepMutable, SignComponents } from './types';
+import type { SignComponents } from './types';
+import { FontSet } from '@prisma/client';
+
 export function renderUnicode(unicodeString: string): string {
 	return String.fromCodePoint(parseInt(unicodeString, 16));
 }

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { GameSettingsInput } from '$houdini/runtime/generated';
 	import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
+	import type { GameSettingsInput } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher<never>();
 
-	export let selectedIds: string[] = [];
+	export let selectedIds: number[] = [];
 
-	$: gameSettingsForm.selectedIds = selectedIds.map(id => parseInt(id));
+	$: gameSettingsForm.selectedIds = selectedIds;
 
 	const gameSettingsForm: GameSettingsInput = {
 		selectedIds: [],

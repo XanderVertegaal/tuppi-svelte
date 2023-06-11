@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { SubmitGameResultStore, type Question$options } from '$houdini';
-	import { GameState, type Answer, type GameResult, type Exercise } from '$lib/types';
 	import { renderUnicode } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { mockGameResults } from './mockData.js';
+	import { GameState, type Question } from '$lib/types.js';
 
 	interface GameResult {
 		correct: boolean;
 		characterId: string;
-		questionType: Question$options;
+		questionType: Question;
 	};
 
 	export let data;
@@ -73,6 +72,8 @@
 		handleGameResult(mockGameResults);
 		selectedExercise = null;
 	}
+
+	// Can we use the same function for both buttons and keyboard input? 
 
 	function checkAnswer(answer: Answer): void {
 		if (!selectedExercise) {

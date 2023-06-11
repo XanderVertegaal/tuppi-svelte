@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { FontSet, type FontSet$options } from '$houdini';
-	import type { SignCardCharacter } from '$lib/types';
 	import { fontsetMapping, renderUnicode } from '$lib/utils';
+	import { FontSet } from '@prisma/client';
 	import { createEventDispatcher } from 'svelte';
 
-	export let character: SignCardCharacter;
+	export let character: any;
 	export let enableSelect: boolean = true;
 	export let selected: boolean = false;
-	export let fontSet: FontSet$options = FontSet.ULLIKUMMI_A;
+	export let fontSet: FontSet = FontSet.ULLIKUMMI_A;
 
-	const dispatch = createEventDispatcher<{ select: { id: string } }>();
+	const dispatch = createEventDispatcher<{ select: { id: number } }>();
 
 	function selectCharacter() {
 		dispatch('select', { id: character.id });

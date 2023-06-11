@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { SignVariantCategory } from '$houdini';
 	import { fontsetMapping, renderUnicode } from '$lib/utils';
-	import type { PageData } from './$houdini';
-	export let data: PageData;
+	import { SignVariantCategory } from '@prisma/client';
+	import type { PageServerData } from './$types';
 
-	$: ({ characters_char } = data);
-	$: character = $characters_char.data?.char;
+	export let data: PageServerData;
+
+	$: ({ character } = data);
+
 	$: defaultVariant = character?.variants?.find(
 		(variant) => variant.category === SignVariantCategory.DEFAULT
 	);
@@ -14,13 +15,11 @@
 	);
 </script>
 
-{#if $characters_char.fetching}
-	<p>Loading...</p>
-{:else if character}
+{#if character}
 	<nav>
-		<button><a href="./{parseInt(character.id) - 1}">Previous</a></button>
+		<button><a href="./{character.id - 1}">Previous</a></button>
 		<h3>Character no. {character.id}</h3>
-		<button><a href="./{parseInt(character.id) + 1}">Next</a></button>
+		<button><a href="./{character.id + 1}">Next</a></button>
 	</nav>
 	<article>
 		<section class="component-gallery">

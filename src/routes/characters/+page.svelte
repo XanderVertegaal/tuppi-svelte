@@ -1,19 +1,19 @@
 <script lang="ts">
 	import SignCard from '$lib/components/SignCard.svelte';
-	import type { PageData } from './$houdini';
 	import GameSettingsForm from '$lib/components/GameSettingsForm.svelte';
 	import { goto } from '$app/navigation';
 	import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
+	import type { PageServerData } from './$types';
 
-	export let data: PageData;
+	export let data: PageServerData;
 
-	$: ({ allCharacters } = data);
+	$: ({ allChars } = data);
 
-	let selectedIds: string[] = [];
+	let selectedIds: number[] = [];
 
-	function selectId(id: string): void {
+	function selectId(id: number): void {
 		if (selectedIds.includes(id)) {
-			selectedIds = selectedIds.filter((cardId) => cardId !== id);
+			selectedIds = selectedIds.filter(cardId => cardId !== id);
 			return;
 		}
 		selectedIds = [...selectedIds, id];
@@ -48,9 +48,9 @@
 	</article>
 {/if}
 
-{#if $allCharacters?.data?.allChars}
+{#if allChars}
 	<ul class="sign-card-list">
-		{#each $allCharacters.data.allChars as character}
+		{#each allChars as character}
 			<SignCard
 				{character}
 				selected={selectedIds.includes(character.id)}
@@ -58,10 +58,6 @@
 			/>
 		{/each}
 	</ul>
-{:else if $allCharacters?.errors}
-	<p>Could not load characters. Sorry about that!</p>
-{:else if $allCharacters?.fetching}
-	<p>Loading characters...</p>
 {/if}
 
 <style lang="scss">

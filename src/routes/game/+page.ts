@@ -1,5 +1,5 @@
-import { getExercisesStore, redirect } from '$houdini';
 import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
+import { redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 
 export async function load() {
@@ -11,14 +11,14 @@ export async function load() {
     throw redirect(302, '/characters');
 	}
 
-	const exerciseStore = new getExercisesStore();
+	// const exerciseStore = new getExercisesStore();
 
-	const exerciseQueryResults = await exerciseStore.fetch({
-		variables: {
-			input: gameSettings
-		},
-		policy: 'CacheAndNetwork'
-	});
+	// const exerciseQueryResults = await exerciseStore.fetch({
+	// 	variables: {
+	// 		input: gameSettings
+	// 	},
+	// 	policy: 'CacheAndNetwork'
+	// });
 
 	const exercises = exerciseQueryResults?.data?.exercises || [];
 
