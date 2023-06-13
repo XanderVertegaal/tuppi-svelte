@@ -2,7 +2,7 @@ import prisma from '$lib/prisma.js';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load = async function({ params }) {
+export const load = async function ({ params }) {
 	const charId = parseInt(params.characterId);
 
 	if (charId < 1) {
@@ -20,9 +20,9 @@ export const load = async function({ params }) {
 		include: {
 			variants: true,
 			logValues: true,
-			detValues: true,
+			detValues: true
 		}
 	});
 
-	return { character }
+	return { character };
 } satisfies PageServerLoad;

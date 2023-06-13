@@ -2,21 +2,19 @@
 	import { renderUnicode } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { mockGameResults } from './mockData.js';
-	import { GameState, type Question } from '$lib/types.js';
+	import { GameState, type Answer, type Question, type Exercise } from '$lib/types.js';
 
 	interface GameResult {
 		correct: boolean;
-		characterId: string;
+		characterId: number;
 		questionType: Question;
-	};
+	}
 
 	export let data;
 	export let exercises = data.exercises;
 
 	let selectedExercise: Exercise | null = null;
 	let gameResults: GameResult[] = [];
-
-	const submitGameResults = new SubmitGameResultStore();
 
 	let gameState: GameState = GameState.RUNNING;
 
@@ -26,55 +24,59 @@
 		selectedExercise = exercises.shift() ?? null;
 		if (!selectedExercise && gameResults.length > 0) {
 			gameState = GameState.FINISHED;
-			handleGameResult(gameResults);
+			submitGameResult(gameResults);
 		}
 	}
 
-  onMount(() => {
-    function handleKeydown(event: KeyboardEvent): void {
-      if (!selectedExercise) {
-        return;
-      }
+	onMount(() => {
+		function handleKeydown(event: KeyboardEvent): void {
+			if (!selectedExercise) {
+				return;
+			}
 
-      const pressedKey = parseInt(event.key)
-      if (isNaN(pressedKey) || pressedKey > selectedExercise.answers.length) {
-        return;
-      }
+			const pressedKey = parseInt(event.key);
+			if (isNaN(pressedKey) || pressedKey > selectedExercise.answers.length) {
+				return;
+			}
 
-      const selectedAnswer = selectedExercise.answers[pressedKey - 1];
-      checkAnswer(selectedAnswer);
-    }
+			const selectedAnswer = selectedExercise.answers[pressedKey - 1];
+			checkAnswer(selectedAnswer);
+		}
 
-    window.addEventListener('keydown', handleKeydown);
+		window.addEventListener('keydown', handleKeydown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeydown);
-    }
-  });
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+	});
 
-
-	async function handleGameResult(results: GameResult[]): Promise<void> {
+	async function submitGameResult(results: GameResult[]): Promise<void> {
 		console.log('Handling game result!', results);
-		// Send to server here.
-
-		submitGameResults.mutate({
-			gameResults: results
-		}).then(mutationResult => {
-			console.log('Mutation result:', mutationResult);
-		}).catch(error => {
-			console.error('Mutation error:', error);
+		const response = await fetch('/api/game/submit-results', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(results)
 		});
+
+		if (response.ok) {
+			console.log('Game results submitted successfully!');
+			const body = await response.json();
+			console.log('Updated sign progresses in Server:', body);
+		} else {
+			console.error('Game results submission failed!');
+		}
 	}
 
 	async function handleFakeGameResults(): Promise<void> {
 		gameState = GameState.FINISHED;
 		gameResults = mockGameResults;
-		handleGameResult(mockGameResults);
+		submitGameResult(mockGameResults);
 		selectedExercise = null;
 	}
 
-	// Can we use the same function for both buttons and keyboard input? 
-
+	// Can we use the same function for both buttons and keyboard input?
 	function checkAnswer(answer: Answer): void {
 		if (!selectedExercise) {
 			return;
@@ -82,9 +84,9 @@
 
 		const newGameResult: GameResult = {
 			characterId: selectedExercise.character.id,
-			questionType: selectedExercise.questionType as Question$options,
+			questionType: selectedExercise.questionType,
 			correct: answer.correct
-		}
+		};
 
 		gameResults = [...gameResults, newGameResult];
 
@@ -130,10 +132,10 @@
 {#if gameState === GameState.FINISHED}
 	<p>Game over!</p>
 
-	<p>Score: {gameResults.filter(result => result.correct).length}/{gameResults.length}</p>
+	<p>Score: {gameResults.filter((result) => result.correct).length}/{gameResults.length}</p>
 	<p>Mistakes:</p>
 	<ul>
-		{#each gameResults.filter(result => !result.correct) as result}
+		{#each gameResults.filter((result) => !result.correct) as result}
 			<li>{result.characterId} - {result.questionType}</li>
 		{/each}
 	</ul>

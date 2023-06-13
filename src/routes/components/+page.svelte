@@ -58,16 +58,16 @@
 		}
 	}
 
-
-	function getBaseCharacters(identicalVariants: ComparableVariant[]
-	): BaseCharacter[] {
+	function getBaseCharacters(identicalVariants: ComparableVariant[]): BaseCharacter[] {
 		const baseCharacters: BaseCharacter[] = [];
 		if (!identicalVariants) {
 			return baseCharacters;
 		}
-		identicalVariants.forEach(variant => {
+		identicalVariants.forEach((variant) => {
 			const category = variant.category;
-			const categoryVariant = variant.character.variants?.find(variant => variant.category === category);
+			const categoryVariant = variant.character.variants?.find(
+				(variant) => variant.category === category
+			);
 			if (categoryVariant) {
 				baseCharacters.push({
 					fontSet: categoryVariant.fontSet,
@@ -75,13 +75,15 @@
 						id: variant.character.id,
 						unicode: variant.character.unicode
 					}
-				})
+				});
 			}
 		});
 		return baseCharacters;
 	}
 
-	function getDisplaySimilarCharacters(similarCharacters: SimilarVariants | null): DisplaySimilarVariants {
+	function getDisplaySimilarCharacters(
+		similarCharacters: SimilarVariants | null
+	): DisplaySimilarVariants {
 		if (!similarCharacters) {
 			return {
 				verticalMinus: [],

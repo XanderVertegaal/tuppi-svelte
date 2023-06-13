@@ -13,13 +13,14 @@
 
 	function selectId(id: number): void {
 		if (selectedIds.includes(id)) {
-			selectedIds = selectedIds.filter(cardId => cardId !== id);
+			selectedIds = selectedIds.filter((cardId) => cardId !== id);
 			return;
 		}
 		selectedIds = [...selectedIds, id];
 	}
 
 	async function startGame(): Promise<void> {
+		console.log('Rerouting!');
 		goto('/game');
 	}
 
@@ -32,7 +33,7 @@
 			inclLog: true,
 			inclSyll: true,
 			numberOfAlternatives: 5,
-			selectedIds: ['1', '2']
+			selectedIds: [1, 2]
 		});
 		startGame();
 	}
