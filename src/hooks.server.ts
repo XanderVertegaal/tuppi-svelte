@@ -10,7 +10,10 @@ export const handle = async function ({ event, resolve }) {
 
 	const user = await prisma.user.findUnique({
 		where: { userAuthToken: session },
-		select: { username: true }
+		select: {
+			id: true,
+			username: true
+		}
 	});
 
 	if (user) {

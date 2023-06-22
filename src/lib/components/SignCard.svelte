@@ -1,32 +1,63 @@
 <script lang="ts">
-	import { fontsetMapping, renderUnicode } from '$lib/utils';
-	import { FontSet } from '@prisma/client';
+	import type { CharacterWithLogDet } from '$lib/types';
+	import { fontsetMapping, masteryDisplayMapping, renderUnicode } from '$lib/utils';
+	import { FontSet, Sign, type SignProgress } from '@prisma/client';
 	import { createEventDispatcher } from 'svelte';
 
-	export let character: any;
-	export let enableSelect: boolean = true;
-	export let selected: boolean = false;
+	export let character: CharacterWithLogDet;
+	export let signProgresses: SignProgress[];
+	export let selected = false;
+	export let openGameSettings = false;
 	export let fontSet: FontSet = FontSet.ULLIKUMMI_A;
+	export let unlocked = false;
+	
+	let syllRank: string | null = null;
+	let logRank: string | null = null;
+	let detRank: string | null = null;
+	
+	$: if (signProgresses) {
+		unlocked = true;
+		syllRank = getMasteryDisplay('SYLLABOGRAM');
+		logRank = getMasteryDisplay('LOGOGRAM');
+		detRank = getMasteryDisplay('DETERMINATIVE');
+	}
 
 	const dispatch = createEventDispatcher<{ select: { id: number } }>();
 
 	function selectCharacter() {
 		dispatch('select', { id: character.id });
 	}
+
+	function getMasteryDisplay(signType: Sign): string {
+		const mastery = signProgresses.find(progress => progress.sign === signType)?.mastery;
+		return mastery ? masteryDisplayMapping[mastery - 1] : '';
+	}
+
 </script>
 
-<li class="char-card" class:selected>
+<section class="char-card" class:selected class:unlocked>
 	<span class="char-id">#{character.id}</span>
-	<h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
+	<a href="/characters/{character.id}">
+		<h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
+	</a>
 
-	{#if enableSelect}
+	{#if unlocked === true}
+		{#if character.syllValues && syllRank}
+			<p class="progress">Syll: {syllRank}</p>
+		{/if}
+		{#if character.logValues.length > 0 && logRank}
+			<p class="progress">Log: {logRank}</p>
+		{/if}
+		{#if character.detValues.length > 0 && detRank}
+			<p class="progress">Det: {detRank}</p>
+		{/if}
+		<!-- {#if openGameSettings} -->
 		<button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
+		<!-- {/if} -->
+	{:else}
+		<p>Locked!</p>
 	{/if}
-
-	<button type="button">
-		<a href="/characters/{character.id}">More info</a>
-	</button>
-</li>
+</section>
 
 <style lang="scss">
 	.char-card {
@@ -35,9 +66,14 @@
 		flex-direction: column;
 		align-items: center;
 		width: 100px;
-		height: 150px;
 		border-radius: 10px;
 		background-color: #f0f0f0;
+		padding: 10px 0;
+
+		a {
+			text-decoration: none;
+			color: black;
+		}
 
 		&.selected {
 			background-color: #979797;
@@ -45,7 +81,7 @@
 
 		.char-id {
 			position: absolute;
-			bottom: 5px;
+			top: 5px;
 			right: 5px;
 			color: #777;
 		}
@@ -53,6 +89,7 @@
 		.char {
 			font-size: 1.5em;
 			text-align: center;
+			margin-bottom: 10px;
 		}
 
 		button {
@@ -64,6 +101,10 @@
 				text-decoration: none;
 				color: black;
 			}
+		}
+
+		.progress {
+			margin: 0 0 5px 0;
 		}
 	}
 </style>

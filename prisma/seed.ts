@@ -3,25 +3,12 @@ import { FontSet, PrismaClient, SignVariantCategory } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-	console.log('Start seeding...');
+	console.log('🍓 Start seeding...');
 	await prisma.user.deleteMany({});
 	await prisma.logograph.deleteMany({});
 	await prisma.determinative.deleteMany({});
 	await prisma.characterVariant.deleteMany({});
 	await prisma.character.deleteMany({});
-
-	await prisma.user.createMany({
-		data: [
-			{
-				firstName: 'Xander',
-				lastName: 'Vertegaal'
-			},
-			{
-				firstName: 'Simon',
-				lastName: 'van Kouteren'
-			}
-		]
-	});
 
 	await prisma.character.create({
 		data: {

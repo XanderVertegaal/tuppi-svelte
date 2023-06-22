@@ -24,7 +24,6 @@ export const load = async function ({ fetch }) {
 	}
 
 	const exercises = (await response.json()) as Exercise[];
-	console.log(exercises);
 
 	return { exercises };
 } satisfies PageLoad;

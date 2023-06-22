@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from './prisma';
-import { Question, type Exercise, type GameSettingsInput } from './types';
+import { Question, type Exercise, type GameSettingsInput, type CharacterWithLogDet } from './types';
 
 function shuffleArray<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
@@ -9,15 +9,6 @@ function shuffleArray<T>(array: T[]): T[] {
 function getRandomItemsFromArray<T>(array: T[], numberOfItems: number): T[] {
 	return shuffleArray(array).slice(0, numberOfItems);
 }
-
-const CharacterWithLogDet = Prisma.validator<Prisma.CharacterArgs>()({
-	include: {
-		logValues: true,
-		detValues: true
-	}
-});
-
-type CharacterWithLogDet = Prisma.CharacterGetPayload<typeof CharacterWithLogDet>;
 
 type CharacterResult = {
 	id: number;
@@ -132,13 +123,17 @@ export async function createExercises(
 		promiseResults.forEach((result) => {
 			const id = result.id;
 
+			// Return if an exercise already exists for this character.
 			if (exercises.find((exercise) => exercise.character.id === id)) {
 				return;
 			}
 
+			// Find the character (correct answer)
 			const characterResult = promiseResults.find(
 				(result) => 'character' in result && result.id === id
 			) as CharacterResult;
+
+			// Find alternative characters (incorrect answers)
 			const alternativeCharsResult = promiseResults.filter(
 				(result) => 'characters' in result && result.id === id
 			) as AlternativeCharacterResult[];
@@ -149,9 +144,7 @@ export async function createExercises(
 			}
 
 			if (gameSettings.inclSyll && character.syllValues.length > 0) {
-				const syllAlternativeCharsResult = alternativeCharsResult.find(
-					(result) => result.type === 'syll'
-				);
+				const syllAlternativeCharsResult = alternativeCharsResult.find((result) => result.type === 'syll');
 				if (!syllAlternativeCharsResult) {
 					return;
 				}

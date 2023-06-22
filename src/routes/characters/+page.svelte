@@ -4,12 +4,26 @@
 	import { goto } from '$app/navigation';
 	import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
 	import type { PageServerData } from './$types';
+	import type { SignProgress, UserSignProgress } from '@prisma/client';
 
 	export let data: PageServerData;
 
-	$: ({ allChars } = data);
+	let dialog: HTMLDialogElement;
+
+	$: ({ allChars, userSignProgresses } = data);
 
 	let selectedIds: number[] = [];
+	let unlockedIds: number[] = [];
+
+	let openGameSettings = false;
+	
+	$: if (userSignProgresses) {
+		unlockedIds = userSignProgresses.map(userSignProgress => userSignProgress.characterId);
+	}
+
+	$: if (openGameSettings === false) {
+		selectedIds = [];
+	}
 
 	function selectId(id: number): void {
 		if (selectedIds.includes(id)) {
@@ -20,28 +34,36 @@
 	}
 
 	async function startGame(): Promise<void> {
-		console.log('Rerouting!');
+		if ($gameSettingsStore === null || $gameSettingsStore.selectedIds.length === 0) {
+			gameSettingsStore.set({
+				cunToTranslit: true,
+				translitToCun: true,
+				inclDet: true,
+				inclLog: true,
+				inclSyll: true,
+				numberOfAlternatives: 5,
+				multipleChoice: true,
+				writtenExercise: true,
+				selectedIds: unlockedIds
+			});
+		}
 		goto('/game');
 	}
 
-	function startMockGame(): void {
-		console.log('Starting mock game!');
-		gameSettingsStore.set({
-			cunToTranslit: true,
-			translitToCun: true,
-			inclDet: true,
-			inclLog: true,
-			inclSyll: true,
-			numberOfAlternatives: 5,
-			selectedIds: [1, 2]
-		});
-		startGame();
+	function getProgressForCharacter(characterId: number): SignProgress[] {
+		return userSignProgresses?.find(userSignProgress => userSignProgress.characterId === characterId)?.signProgress ?? [];
 	}
+
+
 </script>
 
-<button type="button" on:click={startMockGame}>Start mockGame</button>
+<div class="button-wrapper">
+	<button type="button" on:click={() => dialog.showModal()}>Configure game</button>
+	<button type="button" on:click={startGame}>Start game</button>
+</div>
 
-{#if selectedIds.length > 0}
+
+{#if openGameSettings === true}
 	<article class="game-preparation">
 		<section class="selected-controls">
 			<GameSettingsForm bind:selectedIds on:startGame={startGame} />
@@ -49,17 +71,32 @@
 	</article>
 {/if}
 
+{#if selectedIds.length > 0}
+	<p>Selected characters: <span>{selectedIds.join(', ')}</span></p>
+{/if}
+
 {#if allChars}
 	<ul class="sign-card-list">
 		{#each allChars as character}
 			<SignCard
 				{character}
+				{openGameSettings}
+				signProgresses={getProgressForCharacter(character.id)}
+				unlocked={unlockedIds.includes(character.id)}
 				selected={selectedIds.includes(character.id)}
 				on:select={(event) => selectId(event.detail.id)}
 			/>
 		{/each}
 	</ul>
 {/if}
+
+<dialog bind:this={dialog}>
+	<article class="game-preparation">
+		<section class="selected-controls">
+			<GameSettingsForm bind:selectedIds on:confirm={() => dialog.close()} />
+		</section>
+	</article>
+</dialog>
 
 <style lang="scss">
 	.sign-card-list {

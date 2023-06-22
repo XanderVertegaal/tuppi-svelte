@@ -51,7 +51,6 @@
 	});
 
 	async function submitGameResult(results: GameResult[]): Promise<void> {
-		console.log('Handling game result!', results);
 		const response = await fetch('/api/game/submit-results', {
 			method: 'POST',
 			headers: {
@@ -61,9 +60,9 @@
 		});
 
 		if (response.ok) {
-			console.log('Game results submitted successfully!');
+			console.log('Game results submitted successfully!')
 			const body = await response.json();
-			console.log('Updated sign progresses in Server:', body);
+			console.log(body);
 		} else {
 			console.error('Game results submission failed!');
 		}
@@ -139,8 +138,6 @@
 			<li>{result.characterId} - {result.questionType}</li>
 		{/each}
 	</ul>
-
-	<!-- <button type="button" on:click={startGame}>Restart</button> -->
 {/if}
 
 <style lang="scss">

@@ -13,7 +13,9 @@ export const POST = (async ({ request }) => {
 		inclLog: requestBody.inclLog ?? false,
 		inclSyll: requestBody.inclSyll ?? true,
 		cunToTranslit: requestBody.inclSyll ?? true,
-		translitToCun: requestBody.translitToCun ?? false
+		translitToCun: requestBody.translitToCun ?? false,
+		multipleChoice: requestBody.multipleChoice ?? false,
+		writtenExercise: requestBody.writtenExercise ?? false
 	};
 
 	const exercises = await createExercises(gameSettingsInput);

@@ -123,7 +123,7 @@
 						<SignCard
 							fontSet={baseChar.fontSet}
 							character={baseChar.character}
-							enableSelect={false}
+							unlocked={false}
 						/>
 					</li>
 				{/each}

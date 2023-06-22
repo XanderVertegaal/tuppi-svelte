@@ -1,4 +1,4 @@
-import type { Character } from '@prisma/client';
+import { Prisma, type Character } from '@prisma/client';
 
 export interface SignComponents {
 	vertical: number;
@@ -28,6 +28,8 @@ export interface GameSettingsInput {
 	inclSyll: boolean;
 	cunToTranslit: boolean;
 	translitToCun: boolean;
+	multipleChoice: boolean;
+	writtenExercise: boolean;
 }
 
 export enum Question {
@@ -50,3 +52,12 @@ export interface Answer {
 	correct: boolean;
 	displayValue: string;
 }
+
+const CharacterWithLogDet = Prisma.validator<Prisma.CharacterArgs>()({
+	include: {
+		logValues: true,
+		detValues: true
+	}
+});
+
+export type CharacterWithLogDet = Prisma.CharacterGetPayload<typeof CharacterWithLogDet>;

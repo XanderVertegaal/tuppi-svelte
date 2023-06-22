@@ -16,20 +16,18 @@
 		inclLog: true,
 		inclSyll: true,
 		cunToTranslit: true,
-		translitToCun: true
+		translitToCun: true,
+		multipleChoice: true,
+		writtenExercise: true
 	};
 
-	function onStartGame(): void {
+	function confirm(): void {
 		gameSettingsStore.set(gameSettingsForm);
-		dispatch('startGame');
+		dispatch('confirm');
 	}
 </script>
 
 <form class="game-settings">
-	<div>
-		<label for="selIds">Selected characters:</label>
-		<p>{gameSettingsForm.selectedIds.join(', ')}</p>
-	</div>
 	<div>
 		<label for="numEx">Number of alternatives</label>
 		<input
@@ -84,7 +82,7 @@
 			bind:checked={gameSettingsForm.translitToCun}
 		/>
 	</div>
-	<button type="button" on:click={onStartGame}>Start</button>
+	<button type="button" on:click={confirm}>Start</button>
 </form>
 
 <style lang="scss">

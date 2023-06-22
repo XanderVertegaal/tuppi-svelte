@@ -19,3 +19,6 @@ export const fontsetMapping: { [key in keyof typeof FontSet]: string } = {
 	[FontSet.ULLIKUMMI_B]: 'cuneiform-b',
 	[FontSet.ULLIKUMMI_C]: 'cuneiform-c'
 };
+
+
+export const masteryDisplayMapping = ['Noob', 'Starter', 'Improving',	'Proficient',	'Advanced',	'Expert',	'Master',	'Legend'] as const;

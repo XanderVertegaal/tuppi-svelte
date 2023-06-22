@@ -14,24 +14,41 @@ model User {
   id               Int                @id @default(autoincrement())
   username         String             @unique
   passwordHash     String
-  userAuthToken    String @unique
+  userAuthToken    String             @unique
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   userSignProgress UserSignProgress[]
+
+  @@index([username])
 }
 
 model UserSignProgress {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  character   Character @relation(fields: [characterId], references: [id])
-  characterId Int
-  progress    Float     @default(0)
+  id           Int            @id @default(autoincrement())
+  user         User           @relation(fields: [userId], references: [id])
+  userId       Int
+  character    Character      @relation(fields: [characterId], references: [id])
+  characterId  Int
+  signProgress SignProgress[]
 
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, characterId])
+}
+
+model SignProgress {
+  id                 Int              @id @default(autoincrement())
+  sign               Sign
+  mastery            Int              @default(1)
+  nextReview         DateTime
+  seen               Int              @default(0)
+  userSignProgress   UserSignProgress @relation(fields: [userSignProgressId], references: [id])
+  userSignProgressId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userSignProgressId, sign])
 }
 
 model Character {
@@ -72,6 +89,12 @@ model CharacterVariant {
   glossenkeil  Int @default(0)
   diagonalAsc  Int @default(0)
   diagonalDesc Int @default(0)
+}
+
+enum Sign {
+  SYLLABOGRAM
+  LOGOGRAM
+  DETERMINATIVE
 }
 
 enum SignVariantCategory {
