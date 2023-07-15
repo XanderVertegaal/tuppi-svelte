@@ -7,7 +7,6 @@
 	export let character: CharacterWithLogDet;
 	export let signProgresses: SignProgress[];
 	export let selected = false;
-	export let openGameSettings = false;
 	export let fontSet: FontSet = FontSet.ULLIKUMMI_A;
 	export let unlocked = false;
 	
@@ -41,7 +40,7 @@
 		<h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
 	</a>
 
-	{#if unlocked === true}
+	{#if unlocked && signProgresses.length > 0}
 		{#if character.syllValues && syllRank}
 			<p class="progress">Syll: {syllRank}</p>
 		{/if}
@@ -51,11 +50,9 @@
 		{#if character.detValues.length > 0 && detRank}
 			<p class="progress">Det: {detRank}</p>
 		{/if}
-		<!-- {#if openGameSettings} -->
 		<button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
-		<!-- {/if} -->
 	{:else}
-		<p>Locked!</p>
+		<p>🔒</p>
 	{/if}
 </section>
 

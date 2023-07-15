@@ -53,13 +53,12 @@
 	function getProgressForCharacter(characterId: number): SignProgress[] {
 		return userSignProgresses?.find(userSignProgress => userSignProgress.characterId === characterId)?.signProgress ?? [];
 	}
-
-
 </script>
 
 <div class="button-wrapper">
-	<button type="button" on:click={() => dialog.showModal()}>Configure game</button>
+	<button type="button" on:click={() => dialog.showModal()}>Settings</button>
 	<button type="button" on:click={startGame}>Start game</button>
+	<button type="button">Unlock chars</button>
 </div>
 
 
@@ -80,7 +79,6 @@
 		{#each allChars as character}
 			<SignCard
 				{character}
-				{openGameSettings}
 				signProgresses={getProgressForCharacter(character.id)}
 				unlocked={unlockedIds.includes(character.id)}
 				selected={selectedIds.includes(character.id)}
@@ -102,6 +100,7 @@
 	.sign-card-list {
 		list-style: none;
 		display: flex;
+		justify-content: center;
 		flex-wrap: wrap;
 		gap: 1em;
 	}
@@ -109,5 +108,10 @@
 	.selected-controls {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	.button-wrapper {
+		display: flex;
+		justify-content: center;
 	}
 </style>
