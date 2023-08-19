@@ -1,22 +1,35 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Button from '@smui/button';
 	import type { ActionData } from './$types';
+	import Textfield from '@smui/textfield';
 
 	export let form: ActionData;
+
+	let username = '';
+	let password = '';
 </script>
 
-<h1>Login</h1>
+<h6>Login</h6>
 
 <form action="?/login" method="POST" use:enhance>
-	<section>
-		<label for="username">Username</label>
-		<input type="text" name="username" id="username" autocomplete="username" required />
-	</section>
+	<Textfield
+		variant="standard"
+		input$autocomplete="username"
+		input$name="username"
+		label="Username" 
+		bind:value={username} 
+		required />
 
-	<section>
-		<label for="password">Password</label>
-		<input type="password" name="password" id="password" autocomplete="current-password" required />
-	</section>
+		<Textfield
+			class="form-field"
+			variant="standard"
+			input$name="password"
+			input$autocomplete="current-password" 
+			type="password"
+			bind:value={password} 
+			label="Password" 
+			required />
 
 	{#if form?.invalid}
 		<p class="error">Invalid input.</p>
@@ -26,5 +39,13 @@
 		<p class="error">Incorrect username or password.</p>
 	{/if}
 
-	<button type="submit">Log in</button>
+	<Button variant="raised" type="submit">Log in</Button>
 </form>
+
+<style lang="scss">
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+</style>

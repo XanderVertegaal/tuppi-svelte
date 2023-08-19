@@ -2,6 +2,9 @@
 	import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
 	import type { GameSettingsInput } from '$lib/types';
 	import { createEventDispatcher } from 'svelte';
+	import Textfield from '@smui/textfield';
+	import FormField from '@smui/form-field';
+	import Checkbox from '@smui/checkbox';
 
 	const dispatch = createEventDispatcher<never>();
 
@@ -28,65 +31,45 @@
 </script>
 
 <form class="game-settings">
-	<div>
-		<label for="numEx">Number of alternatives</label>
-		<input
-			id="numEx"
-			name="number-of-alternatives"
-			type="number"
-			bind:value={gameSettingsForm.numberOfAlternatives}
-		/>
-	</div>
-	<div>
-		<label for="inclDet">Include determinatives</label>
-		<input
-			id="inclDet"
-			name="include-determinatives"
-			type="checkbox"
-			bind:checked={gameSettingsForm.inclDet}
-		/>
-	</div>
-	<div>
-		<label for="inclLog">Include logograms</label>
-		<input
-			id="inclLog"
-			name="include-logograms"
-			type="checkbox"
-			bind:checked={gameSettingsForm.inclLog}
-		/>
-	</div>
-	<div>
-		<label for="inclSyll">Include syllabograms</label>
-		<input
-			id="inclSyll"
-			name="include-syllabograms"
-			type="checkbox"
-			bind:checked={gameSettingsForm.inclSyll}
-		/>
-	</div>
-	<div>
-		<label for="cunToTranslit">Cuneiform to transliteration</label>
-		<input
-			id="cunToTranslit"
-			name="hittite-to-english"
-			type="checkbox"
-			bind:checked={gameSettingsForm.cunToTranslit}
-		/>
-	</div>
-	<div>
-		<label for="translitToCun">Transliteration to cuneiform</label>
-		<input
-			id="translitToCun"
-			name="english-to-hittite"
-			type="checkbox"
-			bind:checked={gameSettingsForm.translitToCun}
-		/>
-	</div>
-	<button type="button" on:click={confirm}>Start</button>
-</form>
+	<Textfield
+		type="number"
+		variant="standard"
+		label="Number of alternatives"
+		bind:value={gameSettingsForm.numberOfAlternatives}
+	/>
 
-<style lang="scss">
-	p {
-		overflow-x: hidden;
-	}
-</style>
+	<FormField>
+		<Checkbox 
+			input$name="include-determinatives" 
+			bind:checked={gameSettingsForm.inclDet} />
+		<span slot="label">Include determinatives</span>
+	</FormField>
+
+	<FormField>
+		<Checkbox
+			input$name="include-logograms"
+			bind:checked={gameSettingsForm.inclLog} />
+		<span slot="label">Include logograms</span>
+	</FormField>
+
+	<FormField>
+		<Checkbox
+			input$name="include-syllabograms"
+			bind:checked={gameSettingsForm.inclSyll} />
+		<span slot="label">Include syllabograms</span>
+	</FormField>
+
+	<FormField>
+		<Checkbox
+			input$name="hittite-to-english"
+			bind:checked={gameSettingsForm.cunToTranslit} />
+		<span slot="label">Cuneiform to transliteration</span>
+	</FormField>
+
+	<FormField>
+		<Checkbox
+			input$name="english-to-hittite"
+			bind:checked={gameSettingsForm.translitToCun} />
+		<span slot="label">Transliteration to cuneiform</span>
+	</FormField>
+</form>

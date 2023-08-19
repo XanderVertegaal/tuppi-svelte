@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
+	import Button from '@smui/button';
 	import type { PageServerData } from './$types';
 
   export let data: PageServerData;
@@ -15,11 +16,15 @@
 </script>
 
 {#if loggedIn}
-  <h2>Hi {username}</h2>
-  <h3>Welcome to Tuppi!</h3>
-  <h4>You have unlocked {numberOfUnlocks} signs</h4>
+  <h6>Hi {username}</h6>
+  <big>Welcome to Tuppi!</big>
+  <div>
+    <strong>You have unlocked {numberOfUnlocks} signs</strong>
+  </div>
 {:else}
-  <h2>Hi Guest</h2>
-  <h3>Welcome to Tuppi!</h3>
-  <h4>You are not logged in and will not be able to save your progress. Click the register button at the top of the page to create a user account.</h4>
+  <h6>Hi Guest</h6>
+  <big>Welcome to Tuppi!</big>
+  <p>You are not logged in and will not be able to save your progress. Click the register button at the top of the page to create a user account.</p>
 {/if}
+
+<Button href="/characters">Start learning</Button>

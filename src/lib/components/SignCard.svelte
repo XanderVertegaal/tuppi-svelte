@@ -3,6 +3,8 @@
 	import { fontsetMapping, masteryDisplayMapping, renderUnicode } from '$lib/utils';
 	import { FontSet, Sign, type SignProgress } from '@prisma/client';
 	import { createEventDispatcher } from 'svelte';
+	import Card, { Actions, Content, Media, PrimaryAction } from '@smui/card';
+	import Button, { Label } from '@smui/button';
 
 	export let character: CharacterWithLogDet;
 	export let signProgresses: SignProgress[];
@@ -23,7 +25,7 @@
 
 	const dispatch = createEventDispatcher<{ select: { id: number } }>();
 
-	function selectCharacter() {
+	function selectCharacter(event: Event) {
 		dispatch('select', { id: character.id });
 	}
 
@@ -34,74 +36,64 @@
 
 </script>
 
-<section class="char-card" class:selected class:unlocked>
-	<span class="char-id">#{character.id}</span>
-	<a href="/characters/{character.id}">
-		<h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
-	</a>
-
-	{#if unlocked && signProgresses.length > 0}
-		{#if character.syllValues && syllRank}
-			<p class="progress">Syll: {syllRank}</p>
-		{/if}
-		{#if character.logValues.length > 0 && logRank}
-			<p class="progress">Log: {logRank}</p>
-		{/if}
-		{#if character.detValues.length > 0 && detRank}
-			<p class="progress">Det: {detRank}</p>
-		{/if}
-		<button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
-	{:else}
-		<p>🔒</p>
-	{/if}
-</section>
+<div>
+	<Card class="char-card">
+		<PrimaryAction on:click={selectCharacter}>
+			<Media>
+				<a class="char-link" href="/characters/{character.id}">
+					<h2 class="char {fontsetMapping[fontSet]}">{renderUnicode(character.unicode)}</h2>
+				</a>
+			</Media>
+			<Content class='card-content mdc-typography--body2'>
+				{#if unlocked && signProgresses.length > 0}
+					{#if character.syllValues && syllRank}
+						<p class="progress">Syll: {syllRank}</p>
+					{/if}
+					{#if character.logValues.length > 0 && logRank}
+						<p class="progress">Log: {logRank}</p>
+					{/if}
+					{#if character.detValues.length > 0 && detRank}
+						<p class="progress">Det: {detRank}</p>
+					{/if}
+					<button type="button" on:click={selectCharacter}>{selected ? 'Selected' : 'Select'}</button>
+				{:else}
+					<p class="lock">🔒</p>
+				{/if}
+			</Content>
+		</PrimaryAction>
+		<Actions>
+			<Button class="full-width" on:click={selectCharacter} variant={selected ? 'outlined' : 'raised'}>
+				<Label>{selected ? 'Selected' : 'Select'}</Label>
+			</Button>
+		</Actions>
+	</Card>
+</div>
 
 <style lang="scss">
-	.char-card {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 100px;
-		border-radius: 10px;
-		background-color: #f0f0f0;
-		padding: 10px 0;
 
-		a {
-			text-decoration: none;
-			color: black;
-		}
+	// Only picked up if the card is wrapped in another element.
+	* :global(.mdc-card) {
+		width: 120px;
+		max-width: 100%;
+	}
 
-		&.selected {
-			background-color: #979797;
-		}
+	* :global(.full-width) {
+		width: 100%;
+	}
 
-		.char-id {
-			position: absolute;
-			top: 5px;
-			right: 5px;
-			color: #777;
-		}
+	.char-link {
+		text-decoration: none;
+		color: inherit;
 
-		.char {
-			font-size: 1.5em;
+		h2 {
 			text-align: center;
-			margin-bottom: 10px;
+			font-size: 2rem;
+			margin: 1rem 0.5rem 0;
 		}
+	}
 
-		button {
-			&:not(:last-child) {
-				margin-bottom: 5px;
-			}
-
-			a {
-				text-decoration: none;
-				color: black;
-			}
-		}
-
-		.progress {
-			margin: 0 0 5px 0;
-		}
+	.lock {
+		text-align: center;
+		margin: 0;
 	}
 </style>

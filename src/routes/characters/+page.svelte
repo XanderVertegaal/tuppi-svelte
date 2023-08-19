@@ -5,6 +5,9 @@
 	import { gameSettingsStore } from '$lib/stores/gameSettingsStore';
 	import type { PageServerData } from './$types';
 	import type { SignProgress, UserSignProgress } from '@prisma/client';
+	import Button from '@smui/button/src/Button.svelte';
+	import Label from '@smui/list/src/Label.svelte';
+	import Dialog, { Actions, Content, Title } from '@smui/dialog';
 
 	export let data: PageServerData;
 
@@ -53,12 +56,25 @@
 	function getProgressForCharacter(characterId: number): SignProgress[] {
 		return userSignProgresses?.find(userSignProgress => userSignProgress.characterId === characterId)?.signProgress ?? [];
 	}
+
+	function unlockChars(): void {
+		console.log('Implement unlocking characters!');
+	}
 </script>
 
+
 <div class="button-wrapper">
-	<button type="button" on:click={() => dialog.showModal()}>Settings</button>
-	<button type="button" on:click={startGame}>Start game</button>
-	<button type="button">Unlock chars</button>
+	<Button on:click={() => openGameSettings = true}>
+		<Label>Settings</Label>
+	</Button>
+	<Button on:click={startGame}>
+		<Label>Start game</Label>
+	</Button>
+	<Button on:click={unlockChars}>
+		<Label>
+			Unlock chars
+		</Label>
+	</Button>
 </div>
 
 
@@ -88,13 +104,21 @@
 	</ul>
 {/if}
 
-<dialog bind:this={dialog}>
-	<article class="game-preparation">
-		<section class="selected-controls">
-			<GameSettingsForm bind:selectedIds on:confirm={() => dialog.close()} />
-		</section>
-	</article>
-</dialog>
+<Dialog
+	bind:open={openGameSettings}
+	aria-labelledby="modal-title"
+	aria-describedby="modal-content"
+>
+	<Title id="modal-title">
+		<h6>Game settings</h6>
+	</Title>
+	<Content id="modal-content">
+		<GameSettingsForm bind:selectedIds on:confirm={() => openGameSettings = false} />
+	</Content>
+	<Actions>
+		<Button on:SMUI:action={confirm}>Confirm</Button>
+	</Actions>
+</Dialog>
 
 <style lang="scss">
 	.sign-card-list {
@@ -103,11 +127,7 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 1em;
-	}
-
-	.selected-controls {
-		display: flex;
-		justify-content: space-between;
+		padding-left: 0;
 	}
 
 	.button-wrapper {
